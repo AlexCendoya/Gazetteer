@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+
+<html>
+
+    <head>
+
+        <meta charset="utf-8">
+        <title>Gazetteer</title>
+        <meta name="author" content="Alex Cendoya">
+        <meta name="description" content="Geolocation app">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+        <link rel="stylesheet" href="css/style.css">
+        <link rel="stylesheet" type="text/ccs" href="css/bootstrap.min.css">
+
+
+        <link rel="stylesheet" href="css/leaflet.css" />
+        <script src="js/leaflet.js"></script>
+         
+    </head>
+    
+    <body>
+
+        <!--dropdown menu-->
+
+        <nav class="navbar navbar-expand-lg navbar-light bg-light" id="navbar">
+
+            <select id="countries" name="countries">
+
+                <option id="selectCountry"></option>
+
+            </select>
+
+            <button id="selectBtn" data-modal-target="#modal">Find my info!</button>
+         
+        </nav>
+
+        <!--modal pop up-->
+
+        <div class="modal" id="mymodal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+
+                        <button align="right" class="close" type="button" data-dismiss="modal">X</button>
+
+                        <div align="left" class="modal-title">
+                            <h3>Your information</h3>
+                        </div>
+
+
+
+                    </div>
+
+                    <div class="modal-body">
+
+                        <p id="cityName">
+
+                        </p>
+                        <br>
+                        <p id="countryName">
+
+                        </p>
+                        <br>
+                        <p id="weather">
+
+                        </p>
+                        <br>
+                        <p id="exchangeRate">
+
+                        </p>
+                        <br>
+                        <p id="summary">
+
+                        </p>
+                        <br>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--map-->
+
+        <div id="mapid"></div>
+
+        
+        <script src="js/jquery-3.6.0.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src="js/script.js"></script>
+        
+        
+    </body>
+ 
+
+
+</html>
+
