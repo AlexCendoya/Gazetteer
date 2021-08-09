@@ -62,7 +62,16 @@ function getPosition(position){
 }
 
 
+
+
+
+
+
 //AJAX calls by geolocation
+
+
+
+
 
 
 
@@ -165,7 +174,14 @@ $.ajax({
     }
 }); 
 
+
+
+
+
         //AJAX calls to countryBorders files
+
+
+
 
 $.ajax({
     url: "php/Navbar.php",
@@ -175,7 +191,7 @@ $.ajax({
         console.log(result);
                     
         for (var i=0; i<result.data.border.features.length; i++) {
-            $('#selectCountry').append($('<option>', {
+            $('#selectCountry').append($('<option></option>', {
                 value: result.data.border.features[i].properties.iso_a2,
                 text: result.data.border.features[i].properties.name,
             }));
@@ -183,26 +199,151 @@ $.ajax({
         }
     });
 
-
-
-
 var border;
 
 $('#selectBtn').click(function() {
 
+    let name = $('#selCountry').val();
+    
     $.ajax({
         url: "php/borders.php",
         type: 'POST',
         dataType: 'json',
         success: function(result) {
-    
+            if (map.hasLayer(border)) {
+            map.removeLayer(border);
+            }
+            if (name === "CA") {
+                border = L.geoJSON(result.data.border.features[1]).addTo(map);
+              } else if (name === "BHS") {
+                border = L.geoJSON(result.data.border.features[0]).addTo(map);
+              }
+            const filterData = result.data.border.features.filter((a) => (a.properties.iso_a2 === name));
+            border = L.geoJSON(filterData[0]);
             
+        map.fitBounds(border.getBounds());
 
     }); 
 
 
-    map.fitBounds(border.getBounds());
+
 });
 
 
 
+
+
+
+
+
+    //AJAX via Navbar
+
+
+
+
+
+
+
+
+$('#selectBtn').click(function() {
+
+
+    $.ajax({
+        url: "php/findNearbyPlaceName.php",
+        type: 'POST',
+        dataType: 'json',
+        data: {
+            lat: $('#lat').val(),
+            lng: $('#lng').val()
+        },
+        success: function(result) {
+    
+            console.log(JSON.stringify(result));
+    
+            if (result.status.name == "ok") {
+    
+                $('#cityName').html(result['data'][0]['name']);
+                $('#countryName').html(result['data'][0]['countryName']);
+    
+            }
+            
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.log(jqXHR);
+        }
+    }); 
+    
+    $.ajax({
+        url: "php/weather.php",
+        type: 'POST',
+        dataType: 'json',
+        data: {
+            lat: $('#lat').val(),
+            lng: $('#lng').val()
+        },
+        success: function(result) {
+    
+            console.log(JSON.stringify(result));
+    
+            if (result.status.name == "ok") {
+    
+                $('#weather').html(result['data'][0]['description']);
+    
+            }
+            
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.log(jqXHR);
+        }
+    }); 
+    
+    
+    $.ajax({
+        url: "php/exchangeRate.php",
+        type: 'POST',
+        dataType: 'json',
+    
+        success: function(result) {
+    
+            console.log(JSON.stringify(result));
+    
+            if (result.status.name == "ok") {
+    
+                $('#exchangeRate').html(result['data'][0]['BMD']);
+    
+            }
+    
+            
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+             console.log(jqXHR);
+        }
+    }); 
+    
+    
+    
+    $.ajax({
+        url: "php/findNearbyWikipedia.php",
+        type: 'POST',
+        dataType: 'json',
+        data: {
+            lat: $('#lat').val(),
+            lng: $('#lng').val()
+        },
+        success: function(result) {
+    
+            console.log(JSON.stringify(result));
+    
+            if (result.status.name == "ok") {
+    
+                $('#summary').html(result['data'][0]['summary']);
+    
+            }
+            
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.log(jqXHR);
+        }
+    }); 
+
+});
