@@ -11,12 +11,36 @@ zoomOffset: -1,
 accessToken: 'pk.eyJ1IjoiYWxleGNlbmRveWEiLCJhIjoiY2tycXU2b2I3MHFydzJ2cGZ5anY4NHJpMSJ9.XuEs1wZwgCGeCNoG5y4lpQ'
 }).addTo(mymap);
 
+        
 if (!navigator.geolocation) {
-   console.log("Your browser doesn't support geolocation feature!")  
+
+    console.log("Your browser doesn't support geolocation feature!") 
+
 } else {
-    setInterval(() => {
-    navigator.geolocation.getCurrentPosition(getPosition)
-    }, 60000);
+
+    navigator.geolocation.getCurrentPosition(getPosition) {
+
+        var watchID = navigator.geolocation.watchPosition(function(position) {
+            (position.coords.latitude, position.coords.longitude);
+        });
+
+        function getLocationUpdate(){
+            if(!navigator.geolocation){
+               
+                console.log("Your browser doesn't support geolocation feature!")  
+            }
+
+            else {
+               var options = {timeout:60000};
+               enableHighAccuracy: true;
+               geoLoc = navigator.geolocation;
+               watchID = geoLoc.watchPosition(showLocation, errorHandler, options);
+            }
+    }, 
+
+    function(error) {
+        handleLocationError(true, map.getCenter());
+    }
 
     setInterval(showModal, 60000);
     function showModal() {
@@ -26,15 +50,17 @@ if (!navigator.geolocation) {
 }
 
 
+ 
+var lat = position.coords.latitude
+var lng = position.coords.longitude
+var accuracy = position.coords.accuracy
+document.getElementById('lat').textContent = lat
+document.getElementById('lng').textContent = lng
+
 var marker, popup, circle;
 
-function getPosition(position){
- 
-    var lat = position.coords.latitude
-    var lng = position.coords.longitude
-    var accuracy = position.coords.accuracy
-    document.getElementById('lat').textContent = lat
-    document.getElementById('lng').textContent = lng
+function getPosition(position) {
+
 
     if(marker) {
         map.removeLayer(marker)
@@ -214,13 +240,13 @@ $('#selectBtn').click(function() {
             map.removeLayer(border);
             }
             if (name === "CA") {
-                border = L.geoJSON(result.data.border.features[1]).addTo(map);
+                border = L.geoJSON(result.data.border.features[1]).addTo(mymap);
               } else if (name === "BHS") {
-                border = L.geoJSON(result.data.border.features[0]).addTo(map);
+                border = L.geoJSON(result.data.border.features[0]).addTo(mymap);
               }
             const filterData = result.data.border.features.filter((a) => (a.properties.iso_a2 === name));
             border = L.geoJSON(filterData[0]);
-            
+
         map.fitBounds(border.getBounds());
 
     }); 
