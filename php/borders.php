@@ -8,13 +8,28 @@
 
     $result= file_get_contents('countryborders.geo.json');
 
-    $decode = json_decode($result,true);	
+    $decode = json_decode($result,true);
+    
+    $newArr = [];
+
+    if (map.hasLayer(border)) {
+        map.removeLayer(border);
+        }
+        if (name === "CA") {
+            border = L.geoJSON(result.data.border.features[1]).addTo(mymap);
+          } else if (name === "BS") {
+            border = L.geoJSON(result.data.border.features[0]).addTo(mymap);
+          }
+        const filterData = result.data.border.features.filter((a) => (a.properties.iso_a2 === name));
+        border = L.geoJSON(filterData[0]);
+
+    }
 
     $output['status']['code'] = "200";
     $output['status']['name'] = "ok";
     $output['status']['description'] = "success";
     $output['status']['returnedIn'] = intval((microtime(true) - $executionStartTime) * 1000) . " ms";
-    $output['data'] = $decode['features'];
+    $output['data'] = $newArr;
 
     header('Content-Type: application/json; charset=UTF-8');
 
