@@ -12,16 +12,8 @@
     
     $newArr = [];
 
-    if (map.hasLayer(border)) {
-        map.removeLayer(border);
-        }
-        if (name === "CA") {
-            border = L.geoJSON(result.data.border.features[1]).addTo(mymap);
-          } else if (name === "BS") {
-            border = L.geoJSON(result.data.border.features[0]).addTo(mymap);
-          }
-        const filterData = result.data.border.features.filter((a) => (a.properties.iso_a2 === name));
-        border = L.geoJSON(filterData[0]);
+    for ($i=0; $i < count($decode["features"]); $i++) { 
+        array_push($newArr, $decode["features"][$i]);
 
     }
 

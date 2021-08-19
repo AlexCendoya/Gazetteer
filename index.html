@@ -10,20 +10,25 @@
         <meta name="description" content="Geolocation app">
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-        <link rel="stylesheet" type="text/ccs" href="css/style.css">
-        <link rel="stylesheet" type="text/ccs" href="css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/style.css">
+        <link rel="stylesheet" href="css/bootstrap.min.css">
 
 
-        <link rel="stylesheet" href="css/leaflet.css" />
+        <link rel="stylesheet" href="css/leaflet.css"/>
+
+        <script src="js/jquery-3.6.0.min.js"></script>
+        <script src="js/script.js"></script>
         <script src="js/leaflet.js"></script>
+
+
 
     </head>
     
     <body>
 
-        <!--navbar-->
+        <!-- first navbar
 
-        <nav class="navbar navbar-fixed-top navbar-expand-lg navbar-light bg-light" id="navbar">
+        <nav class="navbar navbar-fixed-top navbar-expand-lg navbar-light bg-light" >
 
             <div class="collapse navbar-collapse" id="dropDown">
 
@@ -37,61 +42,152 @@
          
         </nav>
 
+        -->
+
+        <!--new navbar-->
+
+    
+
+        <nav class="navbar navbar-fixed-top navbar-expand-lg navbar-light bg-light" id="navbar">
+
+            <div class="container-fluid">
+                <a class="navbar-brand">Gazetteer</a>
+
+                <div id="dropDown" class="d-flex" >
+
+                    <select id="selectCountry" placeholder="Select country" aria-label="Select country">
+
+                    </select>
+
+                    <button class="btn btn-outline-success" id="selectBtn">Find my info!</button>
+
+
+                </div>
+
+            </div>
+        </nav>
+
+      
+
+
         <!--modal pop up-->
 
-        <div class="modal" id="mymodal">
-            <div class="modal-dialog">
-                <div class="modal-content">
 
-                    <div class="modal-header">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
 
-                        <button align="right" class="close" type="button" data-dismiss="modal">X</button>
 
-                        <div align="left" class="modal-title">
-                            <h3>Your information</h3>
+
+                    <div class="modal fade" id="mymodal">
+                        <div class="modal-dialog modal-lg">
+                            
+                           
+                            <div class="modal-content">
+
+                                <div class="modal-header">
+
+                                    <input class="btn btn-default" data-dismiss= "modal" value="Close">
+                                    
+                                    
+                                    <div align="left" class="modal-title">
+                                        <h3>Your information</h3>
+                                    </div>
+
+                                </div>
+
+                                <div class="modal-body">
+
+                                    <!--
+                                    <p id="cityName">
+
+                                    </p>
+                                    <br>
+                                    <p id="countryName">
+
+                                    </p>
+                                    <br>
+                                    <p id="weather">
+
+                                    </p>
+                                    <br>
+                                    <p id="exchangeRate">
+
+                                    </p>
+                                    <br>
+                                    <p id="summary">
+
+                                    </p>
+                                    <br>
+                                        -->
+                                </div>
+                            </div>
                         </div>
 
-
-
-                    </div>
-
-                    <div class="modal-body">
-
-                        <p id="cityName">
-
-                        </p>
-                        <br>
-                        <p id="countryName">
-
-                        </p>
-                        <br>
-                        <p id="weather">
-
-                        </p>
-                        <br>
-                        <p id="exchangeRate">
-
-                        </p>
-                        <br>
-                        <p id="summary">
-
-                        </p>
-                        <br>
+                                               
 
                     </div>
+
+                    <a href="#" data-toggle="modal" data-target="#mymodal">Open modal</a>
+
                 </div>
             </div>
+        
         </div>
-
         <!--map-->
 
         <div id="mapid"></div>
 
-        
-        <script src="js/jquery-3.6.0.min.js"></script>
-        <script src="js/bootstrap.min.js"></script>
-        <script src="js/script.js"></script>
 
+        <script>
+
+            var mymap = L.map('mapid').setView([50, 0], 5);
+
+            L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+            maxZoom: 18,
+            id: 'mapbox/streets-v11',
+            tileSize: 512,
+            zoomOffset: -1,
+            accessToken: 'pk.eyJ1IjoiYWxleGNlbmRveWEiLCJhIjoiY2tycXU2b2I3MHFydzJ2cGZ5anY4NHJpMSJ9.XuEs1wZwgCGeCNoG5y4lpQ'
+            }).addTo(mymap);
+
+
+            function success(position) {
+                 
+                var crd = position.coords
+ 
+                var lat = position.coords.latitude
+                var lng = position.coords.longitude
+                var accuracy = position.coords.accuracy
+ 
+                var marker = L.marker([lat, lng]).addTo(mymap);
+       
+            }
+ 
+            function error(err) {
+
+               console.warn('ERROR(' + err.code + '): ' + err.message);
+
+            }
+ 
+            var options = {
+            enableHighAccuracy: true,
+            timeout: 5000,
+            maximumAge: 0
+            };
+ 
+            var watchIid = navigator.geolocation.watchPosition(success, error, options);
+ 
+ 
+
+
+        </script>
+        
+
+ 
+
+        <script src="js/bootstrap.min.js"></script>
         
         
     </body>
