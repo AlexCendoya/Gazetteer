@@ -1,10 +1,4 @@
-
-if(!navigator.geolocation) {
-    console.log("Your browser doesn't support geolocation")
-} else {
-    navigator.geolocation.getCurrentPosition(getPosition)
-}
-
+// marker
 
 var lat, lng
 
@@ -13,10 +7,15 @@ function getPosition(position) {
     lng = position.coords.longitude
     var accuracy = position.coords.accuracy
 
-    var marker = L.marker([lat, lng]).addTo(mymap);
+    const coords = [lat, lng];
+
+    var marker = L.marker(coords).addTo(mymap).bindPopup("<h4>You are here!</h4>").openPopup();
+
+    
 }
 
-/*
+
+/* watchPosition
 
 var lat, lng
 
@@ -73,13 +72,82 @@ $('#selectBtn').click(function() {
 });
 
 
-/* Navbar
 
-const selectElement = document.querySelector('.ice-cream');
+/* Dropdown menu*/
 
-selectElement.addEventListener('change', (event) => {
-  const result = document.querySelector('.result');
-  result.textContent = `You like ${event.target.value}`;
+
+$.ajax({
+    url: "php/Navbar.php",
+    type: 'POST',
+    dataType: "json", 
+    data: 'data',     
+    success: function(result) {
+
+        console.log(result);
+
+        if (result.status.name == "ok") {
+
+            $.each(result['data'], function (i, val) {
+
+                $('#selectCountry').append(`<option value="${val['properties']['iso_a2']}">${val['properties']['name']}</option>`)
+
+            });
+
+        }     
+        
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+    }
+    
 });
 
-*/
+
+    /* Borders */
+
+
+var border ;
+
+$('#selectBtn').click(function() {
+
+    let code = $('#selectCountry').val();
+
+    $.ajax({
+        url: "php/borders.php",
+        type: 'POST',
+        dataType: "json", 
+        success: function(result) {
+
+            console.log(result);
+
+            if (result.status.name == "ok") {
+
+                if (map.hasLayer(border)) {
+                    map.removeLayer(border);
+                }
+               
+                $.each(result['data'], function (i, val) {
+
+                    if (code === result.data.features[i].properties.iso_a2) {
+
+                        border = L.geoJSON(result.data.features[i].geometry.coordinates, {
+                            color: "#ff0000",
+                            weight: 10,
+                            opacity: 0.5
+                        }).addTo(mymap).setView(coords, 10);
+
+                    }
+
+                });
+
+                map.fitBounds(border.getBounds());
+
+            }
+
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.log(jqXHR);
+        }
+
+    });
+});

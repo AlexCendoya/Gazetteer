@@ -35,9 +35,14 @@
 
                 <div id="dropDown" class="d-flex" >
 
-                    <select id="selectCountry" placeholder="Select country" aria-label="Select country">
+
+                    <select id="selectCountry" class="selectCountry" name="selectCountry" placeholder="Select country" aria-label="Select country">
+
+                        <option value="">Select a country</option>
+                        <option value="">----------------</option>
 
                     </select>
+
 
                     <button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#exampleModal" id="selectBtn">
                         Find my info!
@@ -101,7 +106,7 @@
 
         <script>
 
-            var mymap = L.map('mapid').setView([45, 2], 5);
+            var mymap = L.map('mapid').setView([47, 2], 5);
 
             L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
             attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
@@ -111,12 +116,19 @@
             zoomOffset: -1,
             accessToken: 'pk.eyJ1IjoiYWxleGNlbmRveWEiLCJhIjoiY2tycXU2b2I3MHFydzJ2cGZ5anY4NHJpMSJ9.XuEs1wZwgCGeCNoG5y4lpQ'
             }).addTo(mymap);
+    
+
+            if(!navigator.geolocation) {
+                console.log("Your browser doesn't support geolocation")
+            } else {
+                navigator.geolocation.getCurrentPosition(getPosition)
+            }
 
 
         </script>
         
     </body>
- 
+            
 
 
 </html>
