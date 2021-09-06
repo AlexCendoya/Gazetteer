@@ -1,3 +1,24 @@
+
+
+var mymap = L.map('mapid').setView([47, 2], 3);
+
+L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+maxZoom: 18,
+id: 'mapbox/streets-v11',
+tileSize: 512,
+zoomOffset: -1,
+accessToken: 'pk.eyJ1IjoiYWxleGNlbmRveWEiLCJhIjoiY2tycXU2b2I3MHFydzJ2cGZ5anY4NHJpMSJ9.XuEs1wZwgCGeCNoG5y4lpQ'
+}).addTo(mymap);
+
+
+if(!navigator.geolocation) {
+    console.log("Your browser doesn't support geolocation")
+} else {
+    navigator.geolocation.getCurrentPosition(getPosition)
+}
+
+
 // marker
 
 var lat, lng
@@ -7,15 +28,44 @@ function getPosition(position) {
     lng = position.coords.longitude
     var accuracy = position.coords.accuracy
 
-    const coords = [lat, lng];
+    let coords = [lat, lng];
 
     var marker = L.marker(coords).addTo(mymap).bindPopup("<h4>You are here!</h4>").openPopup();
-
     
+
+    /* get ISO code for geolocation out of lat/lng  
+    
+    $.ajax({
+        url: "php/countryCode.php",
+        type: 'POST',
+        dataType: "json", 
+        data: {
+            lat: lat,
+            lng: lng,
+        }, 
+        success: function(result) {
+            
+            console.log(JSON.stringify(result));
+
+            if (result.status.name == "ok") {
+
+                let countryCode = result["data"];
+
+                });
+
+            }     
+            
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.log(jqXHR);
+        }
+        
+    });
+*/
 }
 
-
-/* watchPosition
+/*
+watchPosition
 
 var lat, lng
 
@@ -45,31 +95,6 @@ var options = {
 
 var watchIid = navigator.geolocation.watchPosition(success, error, options);
 
-*/
-
-$('#selectBtn').click(function() {
-    
-    $.ajax({
-        url: "php/findNearbyWikipedia.php",
-        type: 'POST',
-        dataType: 'json',
-        data: {lat, lng},
-        success: function(result) {
-
-            console.log(JSON.stringify(result));
-
-            if (result.status.name == "ok") {
-
-                $('#summary').html(result['data'][0]['summary']);
-
-            }
-            
-        },
-        error: function(jqXHR, textStatus, errorThrown) {
-            console.log(jqXHR);
-        }
-    }); 
-});
 
 
 
@@ -89,7 +114,7 @@ $.ajax({
 
             $.each(result['data'], function (i, val) {
 
-                $('#selectCountry').append(`<option value="${val['properties']['iso_a2']}">${val['properties']['name']}</option>`)
+                $('#selectCountry').append(`<option value="${val['properties']['iso_a2']}">${val['properties']['name']}</option>`);
 
             });
 
@@ -106,16 +131,17 @@ $.ajax({
     /* Borders */
 
 
-var border ;
 
-$('#selectBtn').click(function() {
 
-    let code = $('#selectCountry').val();
+$('#selectCountry').change(function() {
+
+    let isoCode = $('#selectCountry').val();
 
     $.ajax({
         url: "php/borders.php",
         type: 'POST',
-        dataType: "json", 
+        dataType: "json",
+        data: {"isoCode": isoCode},  
         success: function(result) {
 
             console.log(result);
@@ -125,22 +151,26 @@ $('#selectBtn').click(function() {
                 if (map.hasLayer(border)) {
                     map.removeLayer(border);
                 }
-               
-                $.each(result['data'], function (i, val) {
+            
+                var borderLines = result["data"];
 
-                    if (code === result.data.features[i].properties.iso_a2) {
+                var borderStyle = {
 
-                        border = L.geoJSON(result.data.features[i].geometry.coordinates, {
-                            color: "#ff0000",
-                            weight: 10,
-                            opacity: 0.5
-                        }).addTo(mymap).setView(coords, 10);
+                    "color": "#ff0000",     
+                    "weight": 10,
+                    "opacity": 0.5
+                };
 
-                    }
+                var border = L.geoJSON(borderLines , {
 
-                });
+                    style : borderStyle
 
+                }).addTo(mymap);               
+            
                 map.fitBounds(border.getBounds());
+
+
+
 
             }
 
