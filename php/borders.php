@@ -1,4 +1,3 @@
-
 <?php
 
     ini_set('display_errors', 'On');
@@ -6,14 +5,15 @@
 
     $executionStartTime = microtime(true);
 
-    $isoCode = $_GET['isoCode'];
+    $isoCode = $_POST['isoCode'];
 
-    $result= file_get_contents('countryborders.geo.json');
+    $result= file_get_contents('countryBorders.geo.json');
 
     $decode = json_decode($result,true);
 
-    $borders = [];
+    //Iterate through the geoJson file to retrieve the data
 
+    $borders = [];
 
     foreach($decode["features"] as $feature ) {
         
@@ -23,7 +23,6 @@
 
             break;
         }
-
 
     };
 

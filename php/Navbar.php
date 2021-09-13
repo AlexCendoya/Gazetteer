@@ -1,31 +1,32 @@
-
 <?php
 
-ini_set('display_errors', 'On');
-error_reporting(E_ALL);
+    ini_set('display_errors', 'On');
+    error_reporting(E_ALL);
 
-$executionStartTime = microtime(true);
+    $executionStartTime = microtime(true);
 
-$result= file_get_contents('countryborders.geo.json');
+    $result= file_get_contents('countryBorders.geo.json');
 
-$decode = json_decode($result,true);
+    $decode = json_decode($result,true);
 
-$newArr = [];
+    //Iterate through the geoJson file to retrieve the data
 
-for ($i=0; $i < count($decode["features"]); $i++) { 
-    array_push($newArr, $decode["features"][$i]);
+    $newArr = [];
 
-}
+    for ($i=0; $i < count($decode["features"]); $i++) { 
+        array_push($newArr, $decode["features"][$i]);
 
-$output['status']['code'] = "200";
-$output['status']['name'] = "ok";
-$output['status']['description'] = "success";
-$output['status']['returnedIn'] = intval((microtime(true) - $executionStartTime) * 1000) . " ms";
-$output['data'] = $newArr;
+    }
 
-header('Content-Type: application/json; charset=UTF-8');
+    $output['status']['code'] = "200";
+    $output['status']['name'] = "ok";
+    $output['status']['description'] = "success";
+    $output['status']['returnedIn'] = intval((microtime(true) - $executionStartTime) * 1000) . " ms";
+    $output['data'] = $newArr;
 
-echo json_encode($output); 
+    header('Content-Type: application/json; charset=UTF-8');
+
+    echo json_encode($output); 
 
 ?>
 
