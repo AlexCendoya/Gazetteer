@@ -32,6 +32,17 @@ html, body {
     -webkit-text-stroke: 1px black;
 }
 
+/* modal */
+
+.modal-content {
+    font-family: sans-serif;
+}
+
+.modal-content .modal-header .modal-title .countryName {
+    font-weight: bolder;
+    font-size: 1.25em;
+}
+
 
 /*zoom control*/
 

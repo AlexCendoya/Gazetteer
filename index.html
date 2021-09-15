@@ -41,7 +41,7 @@
 
 
                     <button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#exampleModal" id="selectBtn">
-                        Find my info!
+                        See my info!
                     </button>
 
                 </div>
@@ -54,38 +54,75 @@
 
 
             <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
+            <div class="modal-dialog">
                 <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Your information</h5>
+
+                    <table class="modal-title">
+                        <tr>
+                            <td id="countryFlag">
+
+                            </td>
+                            <br>
+                            <td class="countryName" id="countryName">
+                                
+                            </td>
+
+                        </tr>
+                    </table>
+
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     
+                <table>
 
                     <tr>
-                        <td id="cityName">
+                        <td>
+                            Capital city:
+                        </td>
+                        <td id="capitalCity">
 
-                        </td>
-                        <br>
-                        <td id="countryName">
-    
-                        </td>
-                        <br>
-                        <td id="weather">
-    
-                        </td>
-                        <br>
-                        <td id="exchangeRate">
-    
-                        </td>
-                        <br>
-                        <td id="summary">
-    
                         </td>
 
                     </tr>
 
+                    <tr>
+                        <td>
+                            Population:
+                        </td>
+                        <td id="population">
+
+                        </td>
+
+                    </tr>
+
+                    <tr>
+                        <td>
+                            Currency: 
+                        </td>
+                        <td id="currencyName">
+
+                        </td>
+                        <td id="currencySymbol">
+
+                        </td>
+
+                    </tr>
+
+                    <tr>
+                        <td>
+                            Language:
+                        </td>
+                        <td id="language">
+
+                        </td>
+
+                    </tr>
+
+                    <!-- weather, exchangeRate, summary...-->
+
+                </table>
                    
                     <br>
                 </div>
