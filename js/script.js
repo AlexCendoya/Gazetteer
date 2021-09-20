@@ -1,21 +1,16 @@
 $(document).ready(function(){
 
+
+    //Sidebar
+
+    $('#sidebarCollapse').on('click', function () {
+        $('#sidebar').toggleClass('active');
+    });
+
     //map and geolocation
 
 
     var mymap = L.map('mapid').setView([47, 2], 3);
-
-
-    /*
-    L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-    maxZoom: 18,
-    id: 'mapbox/streets-v11',
-    tileSize: 512,
-    zoomOffset: -1,
-    accessToken: 'pk.eyJ1IjoiYWxleGNlbmRveWEiLCJhIjoiY2tycXU2b2I3MHFydzJ2cGZ5anY4NHJpMSJ9.XuEs1wZwgCGeCNoG5y4lpQ'
-    }).addTo(mymap);
-    */
 
     var Esri_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
         attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
@@ -28,9 +23,9 @@ $(document).ready(function(){
     }
 
 
-    // latitude&Longitude values and marker
+    // latitude&longitude values, marker and pop-up
 
-    var lat, lng, marker, border, borderStyle, borderLines
+    var lat, lng, marker, border, borderStyle, borderLines, cityName
 
     function getPosition(position) {
         lat = position.coords.latitude
@@ -39,7 +34,7 @@ $(document).ready(function(){
 
         let coords = [lat, lng];
 
-        marker = L.marker(coords).addTo(mymap).bindPopup("<h4>You are here!</h4>").openPopup();
+        marker = L.marker(coords).addTo(mymap).bindPopup("<h5>You are here!</h5>").openPopup();
 
         
         //geolocation out of lat/lng: get ISO code out API and use it highlight location
@@ -61,6 +56,156 @@ $(document).ready(function(){
 
                     $("#selectCountry").val(result['data'].toUpperCase()).change();
 
+                    // modal and modal content
+
+                    $("#exampleModal").modal('show');
+
+                    $.ajax({
+                        url: "php/cityName.php",
+                        type: 'POST',
+                        dataType: "json",
+                        data: {
+                            lat: lat,
+                            lng: lng,
+                        },   
+                        success: function(result) {
+
+                            console.log(result);
+
+                            if (result.status.name == "ok") {
+                                
+                                $('#cityName').html(result.data.suburb + "(" + result.data.city + ")");
+                                cityName = result.data.city;
+
+                            }
+
+                        },
+                        error: function(jqXHR, textStatus, errorThrown) {
+                            console.log(jqXHR);
+                        }
+                        
+
+                    });
+
+
+                    $.ajax({
+                        url: "php/weather.php",
+                        type: 'POST',
+                        dataType: "json",
+                        data: {
+                            lat: lat,
+                            lng: lng,
+                        },   
+                        success: function(result) {
+
+                            console.log(result);
+
+                            if (result.status.name == "ok") {
+                                
+                                $('#temperature').html(result.data1.temp + "°C");
+                                $('#humidity').html(result.data1.humidity + "%");                                
+                                $('#weather').html(result['data2'][0]['description']);
+
+                                var weatherIcon = result['data2'][0]['icon'];
+
+                                $('#weatherIcon').html("<img src='http://openweathermap.org/img/wn/" + weatherIcon + "@2x.png' />");
+
+                            }
+
+                        },
+                        error: function(jqXHR, textStatus, errorThrown) {
+                            console.log(jqXHR);
+                        }
+                        
+
+                    });
+                    
+
+                    $.ajax({
+                        url: "php/time.php",
+                        type: 'POST',
+                        dataType: "json",
+                        data: {
+                            lat: lat,
+                            lng: lng,
+                        },   
+                        success: function(result) {
+
+                            console.log(result);
+
+                            if (result.status.name == "ok") {
+                                
+                                $('#sunrise').html(result['data1']);
+                                $('#sunset').html(result['data2']);
+                                $('#time').html(result['data3']);
+
+                            }
+
+                        },
+                        error: function(jqXHR, textStatus, errorThrown) {
+                            console.log(jqXHR);
+                        }
+
+                       
+
+                    }); 
+
+                    $.ajax({
+                        url: "php/wikipedia.php",
+                        type: 'POST',
+                        dataType: "json",
+                        data: {"cityName": cityName},   
+                        success: function(result) {
+
+                            console.log(result);
+
+                            if (result.status.name == "ok") {
+                                
+                                var cityWikipedia = result['data'][0]['wikipediaUrl'];
+
+                                $('#wikipedia').html('<a href ="' + cityWikipedia + '"> ' + cityName + ' </a>');
+
+                            }
+
+                        },
+                        error: function(jqXHR, textStatus, errorThrown) {
+                            console.log(jqXHR);
+                        }
+
+                       
+
+                    }); 
+
+                    $.ajax({
+                        url: "php/findNearbyWikipedia.php",
+                        type: 'POST',
+                        dataType: "json",
+                        data: {
+                            lat: lat,
+                            lng: lng,
+                        },   
+                        success: function(result) {
+
+                            console.log(result);
+
+                            if (result.status.name == "ok") {
+                                
+                                var nearbyWikipedia = result['data'][0]['wikipediaUrl'];
+
+                                $('#nearbyWikipedia').html('<a href ="' + nearbyWikipedia + '">Something interesting next to you waits to be found</a>');
+
+                            }
+
+                        },
+                        error: function(jqXHR, textStatus, errorThrown) {
+                            console.log(jqXHR);
+                        }
+
+                       
+
+                    });
+
+
                 }     
                 
             },
@@ -73,39 +218,6 @@ $(document).ready(function(){
                     
 
     }  
-
-
-    /*
-    watchPosition
-
-    var lat, lng
-
-    function success(position) {
-        
-        var crd = position.coords
-
-        lat = position.coords.latitude
-        lng = position.coords.longitude
-        var accuracy = position.coords.accuracy
-
-        var marker = L.marker([lat, lng]).addTo(mymap);
-
-    }
-
-    function error(err) {
-
-    console.warn('ERROR(' + err.code + '): ' + err.message);
-
-    }
-
-    var options = {
-        enableHighAccuracy: true,
-        timeout: 5000,
-        maximumAge: 0
-    };
-
-    var watchIid = navigator.geolocation.watchPosition(success, error, options);
-    */
 
 
     /* Dropdown menu*/
@@ -125,7 +237,7 @@ $(document).ready(function(){
                 $.each(result['data'], function (i, val) {
 
                     $('#selectCountry').append(`<option value="${val['properties']['iso_a2']}">${val['properties']['name']}</option>`);
-
+                 
                 });
 
             }     
@@ -175,15 +287,12 @@ $(document).ready(function(){
                 
                     mymap.fitBounds(border.getBounds());
 
-
-                    // modal
+                     
                     
-                    $("#exampleModal").modal('show');
-                        
-                    
-                    // modal content
+                    // sidebar content
 
                     $('#countryFlag').html("<img src='https://www.countryflags.io/" + isoCode + "/flat/64.png' />");
+
 
                     $.ajax({
                         url: "php/restCountries.php",
@@ -202,6 +311,8 @@ $(document).ready(function(){
                                 $('#currencyName').html(result['data4'][0]['name']);
                                 $('#currencySymbol').html(result['data4'][0]['symbol']);
                                 $('#language').html(result['data5'][0]['name']);
+
+
                             }
 
                         },

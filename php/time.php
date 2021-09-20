@@ -5,9 +5,8 @@
 
     $executionStartTime = microtime(true);
 
-    $url='https://api.openweathermap.org/data/2.5/weather?lat=' . $_REQUEST['lat'] . '&lon=' . $_REQUEST['lng'] . '&units=metric&appid=85d38f64c17227dd8dccf75af3501327';
-
-
+    $url='http://api.geonames.org/timezoneJSON?formatted=true&lat=' . $_REQUEST['lat'] . '&lng=' . $_REQUEST['lng'] . '&username=alexcendoya&style=full';
+    
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -15,14 +14,17 @@
 
     $result=curl_exec($ch);
 
+
     $decode = json_decode($result,true);	
 
     $output['status']['code'] = "200";
     $output['status']['name'] = "ok";
     $output['status']['description'] = "success";
     $output['status']['returnedIn'] = intval((microtime(true) - $executionStartTime) * 1000) . " ms";
-    $output['data1'] = $decode['main'];
-    $output['data2'] = $decode['weather'];
+    $output['data1'] = $decode['sunrise'];
+    $output['data2'] = $decode['sunset'];
+    $output['data3'] = $decode['time'];
+
 
     header('Content-Type: application/json; charset=UTF-8');
 

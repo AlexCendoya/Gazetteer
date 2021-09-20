@@ -5,8 +5,7 @@
 
     $executionStartTime = microtime(true);
 
-    $url='https://api.openweathermap.org/data/2.5/weather?lat=' . $_REQUEST['lat'] . '&lon=' . $_REQUEST['lng'] . '&units=metric&appid=85d38f64c17227dd8dccf75af3501327';
-
+    $url='https://api.opencagedata.com/geocode/v1/json?q=' . $_REQUEST['lat'] . '+' . $_REQUEST['lng'] . '&key=894cf534bad442259e64a7abe266facd';
 
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
@@ -15,14 +14,14 @@
 
     $result=curl_exec($ch);
 
+
     $decode = json_decode($result,true);	
 
     $output['status']['code'] = "200";
     $output['status']['name'] = "ok";
     $output['status']['description'] = "success";
     $output['status']['returnedIn'] = intval((microtime(true) - $executionStartTime) * 1000) . " ms";
-    $output['data1'] = $decode['main'];
-    $output['data2'] = $decode['weather'];
+    $output['data'] = $decode['results'][0]['components'];
 
     header('Content-Type: application/json; charset=UTF-8');
 

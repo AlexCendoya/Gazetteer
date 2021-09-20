@@ -22,46 +22,24 @@
     
     <body>
 
-        <!-- Navbar -->
-
-        <nav class="navbar navbar-fixed-top navbar-expand-lg navbar-light bg-light fixed-top" id="navbar">
-
-            <div class="container-fluid">
-                <a class="navbar-brand">Gazetteer</a>
-
-                <div id="dropDown" class="d-flex" >
+        <div class="wrapper">
 
 
-                    <select id="selectCountry" class="selectCountry" name="selectCountry" placeholder="Select country" aria-label="Select country">
+            <!-- Sidebar  -->
 
-                        <option value="">Select a country!</option>
-                        <option value="">----------------</option>
+            <nav id="sidebar">
 
-                    </select>
-
-
-                    <button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#exampleModal" id="selectBtn">
-                        See my info!
-                    </button>
+                <div class="sidebar-header">
 
                 </div>
+    
+                <ul class="country">
 
-            </div>
-        </nav>
+                    <table class="country name">
 
-                  
-            <!-- Modal -->
-
-
-            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                <div class="modal-header">
-
-                    <table class="modal-title">
                         <tr>
                             <td id="countryFlag">
-
+                            
                             </td>
                             <br>
                             <td class="countryName" id="countryName">
@@ -69,74 +47,234 @@
                             </td>
 
                         </tr>
+
+
+                    </table>                   
+                    <br>
+                    <br>                      
+                    <table class="country information">
+
+                        <tr>
+                            <td>
+                                <b>Capital city:</b>
+                            </td>
+                            <td id="capitalCity">
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <b>Population:</b>
+                            </td>
+                            <td id="population">
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <b>Currency:</b> 
+                            </td>
+                            <td id="currencyName">
+
+                            </td>
+                            <td id="currencySymbol">
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <b>Language:</b>
+                            </td>
+                            <td id="language">
+
+                            </td>
+
+                        </tr>
+
+
                     </table>
 
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    
-                <table>
-
-                    <tr>
-                        <td>
-                            Capital city:
-                        </td>
-                        <td id="capitalCity">
-
-                        </td>
-
-                    </tr>
-
-                    <tr>
-                        <td>
-                            Population:
-                        </td>
-                        <td id="population">
-
-                        </td>
-
-                    </tr>
-
-                    <tr>
-                        <td>
-                            Currency: 
-                        </td>
-                        <td id="currencyName">
-
-                        </td>
-                        <td id="currencySymbol">
-
-                        </td>
-
-                    </tr>
-
-                    <tr>
-                        <td>
-                            Language:
-                        </td>
-                        <td id="language">
-
-                        </td>
-
-                    </tr>
-
-                    <!-- weather, exchangeRate, summary...-->
-
-                </table>
-                   
-                    <br>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
-                </div>
-                </div>
-            </div>
-            </div>
+                </ul>
     
-        <!--map-->
+            </nav>
 
-        <div id="mapid"></div>
+            <!-- Page content  -->
 
+            <div id="content">
+                <!-- Navbar -->
+
+                <nav class="navbar navbar-fixed-top navbar-expand-lg navbar-light bg-light fixed-top" id="navbar">
+
+                    <div class="container-fluid">
+                        <a class="navbar-brand">Gazetteer</a>
+
+                        <button type="button" id="sidebarCollapse" class="btn btn-success">
+
+                            <i class="fas fa-align-left"></i>
+                            <span>Country info</span>
+
+                        </button>
+
+                        <div id="dropDown" class="d-flex" >
+
+
+                            <select id="selectCountry" class="selectCountry" name="selectCountry" placeholder="Select country" aria-label="Select country">
+
+                                <option value="">Select a country!</option>
+                                <option value="">----------------</option>
+
+                            </select>
+
+                            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal" id="selectBtn">
+                                My local info!
+                            </button>
+
+                        </div>
+
+                    </div>
+                </nav>
+
+                        
+                <!-- Modal -->
+
+
+                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+
+                            <div class="modal-header">
+
+                                <table class="modal-title">
+
+                                    <tr>
+                                        <td>
+    
+                                            <img class="cityIcon" src="noun_City_481957.png" />
+    
+                                        </td>
+                                        <br>
+                                        <td id="cityName">
+    
+                                        </td>
+            
+                                    </tr>
+
+                                </table>
+
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                            </div>
+
+                            <div class="modal-body">
+                                
+                                <table class="main-info">
+
+                                    <tr>
+
+                                        <td id="time">
+
+                                        </td>
+                                        <td>
+                                            <div id="weatherIcon"></div>
+                                        </td>
+                                        <td id="temperature">
+
+                                        </td>
+
+                                    </tr>
+
+                                </table>
+
+
+
+                                <table>
+
+                                    <tr>
+
+                                        <td>
+                                            <b>Weather:</b>
+                                        </td>
+                                        <td id="weather">
+
+                                        </td>
+
+                                    </tr>
+
+                                    <tr>
+
+                                        <td>
+                                            <b>Humidity:</b>
+                                        </td>
+                                        <td id="humidity">
+
+                                        </td>
+
+                                    </tr>                                    
+
+                                    <tr>
+                                        <td>
+                                            <b>Sunrise:</b>
+                                        </td>
+                                        <td id="sunrise">
+            
+                                        </td>
+            
+                                    </tr>
+
+                                    <tr>
+                                        <td>
+                                            <b>Sunset:</b>
+                                        </td>
+                                        <td id="sunset">
+            
+                                        </td>
+            
+                                    </tr>
+
+                                    <tr>
+                                        <td>
+                                            <b>Wiki City entry:</b>
+                                        </td>
+                                        <td id="wikipedia">
+            
+                                        </td>
+            
+                                    </tr>
+
+                                    <tr>
+                                        <td>
+                                            <b>Nearby wiki entry:</b>
+                                        </td>
+                                        <td id="nearbyWikipedia">
+
+                                        </td>
+            
+                                    </tr>
+                                    <hr/>
+
+                                </table>
+                                
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            
+                <!--Map-->
+
+                <div id="mapid"></div>
+
+
+            </div>
+
+        
+        </div>
                 
         <script src="js/jquery-3.6.0.min.js"></script>
         <script src="js/leaflet.js"></script>
