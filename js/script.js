@@ -25,7 +25,7 @@ $(document).ready(function(){
 
     // latitude&longitude values, marker and pop-up
 
-    var lat, lng, marker, border, borderStyle, borderLines, cityName
+    var lat, lng, marker, border, borderStyle, borderLines
 
     function getPosition(position) {
         lat = position.coords.latitude
@@ -61,29 +61,82 @@ $(document).ready(function(){
                     $("#exampleModal").modal('show');
 
                     $.ajax({
+
                         url: "php/cityName.php",
+
                         type: 'POST',
+
                         dataType: "json",
+
                         data: {
                             lat: lat,
                             lng: lng,
                         },   
-                        success: function(result) {
 
-                            console.log(result);
+                        success: function(r1) {
 
-                            if (result.status.name == "ok") {
-                                
-                                $('#cityName').html(result.data.suburb + "(" + result.data.city + ")");
-                                cityName = result.data.city;
+                            console.log(r1);
+
+                            if (r1.status.name == "ok") {
+                           
+
+                                $('#cityName').html(r1.data.suburb + "(" + r1.data.city + ")");
+
+                                var cityName = r1.data.city;
+
+                                console.log(r1.data.city);
+
+ 
+
+                                $.ajax({
+
+                                    url: "php/wikipedia.php",
+                                    type: 'POST',
+                                    dataType: "json",
+                                    data: {cityName: encodeURI(r1.data.city)},   
+
+                                    success: function(result1) {
+            
+                                        console.log(result1);
+            
+                                        if (result1.status.name == "ok") {
+                                            
+                                            var cityWikipedia = result1['data'][0]['wikipediaUrl'];
+           
+                                            $('#wikipedia').html('<a href ="' + cityWikipedia + '"> ' + cityName + ' </a>');
+            
+                                        }
+
+          
+                                    },
+
+                                    error: function(jqXHR, textStatus, errorThrown) {
+
+                                        console.log(jqXHR);
+
+                                    }
+                                        
+        
+
+                                }); 
+
+ 
 
                             }
 
+ 
+
                         },
+
                         error: function(jqXHR, textStatus, errorThrown) {
+
                             console.log(jqXHR);
+
                         }
+
                         
+
+ 
 
                     });
 
@@ -150,31 +203,6 @@ $(document).ready(function(){
 
                     }); 
 
-                    $.ajax({
-                        url: "php/wikipedia.php",
-                        type: 'POST',
-                        dataType: "json",
-                        data: {"cityName": cityName},   
-                        success: function(result) {
-
-                            console.log(result);
-
-                            if (result.status.name == "ok") {
-                                
-                                var cityWikipedia = result['data'][0]['wikipediaUrl'];
-
-                                $('#wikipedia').html('<a href ="' + cityWikipedia + '"> ' + cityName + ' </a>');
-
-                            }
-
-                        },
-                        error: function(jqXHR, textStatus, errorThrown) {
-                            console.log(jqXHR);
-                        }
-
-                       
-
-                    }); 
 
                     $.ajax({
                         url: "php/findNearbyWikipedia.php",
@@ -192,7 +220,7 @@ $(document).ready(function(){
                                 
                                 var nearbyWikipedia = result['data'][0]['wikipediaUrl'];
 
-                                $('#nearbyWikipedia').html('<a href ="' + nearbyWikipedia + '">Something interesting next to you waits to be found</a>');
+                                $('#nearbyWikipedia').html('<a href ="' + nearbyWikipedia + '">Something interesting next to you awaits to be found</a>');
 
                             }
 
