@@ -1,12 +1,6 @@
 $(document).ready(function(){
 
 
-    //Sidebar
-
-    $('#sidebarCollapse').on('click', function () {
-        $('#sidebar').toggleClass('active');
-    });
-
     //map and geolocation
 
 
@@ -16,16 +10,19 @@ $(document).ready(function(){
         attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
     }).addTo(mymap);
 
+    var infoButton = L.easyButton('<i class="fas fa-globe-europe"></i>', function(btn, mymap) {
+        $('#myModal').modal('show');
+    }).addTo(mymap);
+
     if(!navigator.geolocation) {
         console.log("Your browser doesn't support geolocation")
     } else {
         navigator.geolocation.getCurrentPosition(getPosition)
     }
 
+    // latitude&longitude values
 
-    // latitude&longitude values, marker and pop-up
-
-    var lat, lng, marker, border, borderStyle, borderLines
+    var lat, lng, border, borderStyle, borderLines
 
     function getPosition(position) {
         lat = position.coords.latitude
@@ -34,11 +31,10 @@ $(document).ready(function(){
 
         let coords = [lat, lng];
 
-        marker = L.marker(coords).addTo(mymap).bindPopup("<h5>You are here!</h5>").openPopup();
-
         
         //geolocation out of lat/lng: get ISO code out API and use it highlight location
         
+        var marker, suburb, cityName, localTime, localTemperature, localWeather, localWeatherIcon, cityWikipedia
 
         $.ajax({
             url: "php/countryCode.php",
@@ -56,18 +52,14 @@ $(document).ready(function(){
 
                     $("#selectCountry").val(result['data'].toUpperCase()).change();
 
-                    // modal and modal content
 
-                    $("#exampleModal").modal('show');
+                    //modal content
 
                     $.ajax({
 
                         url: "php/cityName.php",
-
                         type: 'POST',
-
                         dataType: "json",
-
                         data: {
                             lat: lat,
                             lng: lng,
@@ -82,11 +74,21 @@ $(document).ready(function(){
 
                                 $('#cityName').html(r1.data.suburb + "(" + r1.data.city + ")");
 
-                                var cityName = r1.data.city;
+                                suburb = r1.data.suburb
+
+                                cityName = r1.data.city;
 
                                 console.log(r1.data.city);
 
- 
+                                marker = L.marker(coords).addTo(mymap).bindPopup(
+                                    "<h5 align='center'>You are here!</h5><h6>" + suburb + " (" + cityName + ")</h6><hr/><table><tr><td><img src='http://openweathermap.org/img/wn/" 
+                                    + localWeatherIcon 
+                                    + "@2x.png' /></td><td>" 
+                                    + localTemperature + "°C </td></tr></table>"
+                                    + localWeather + "<br/>" 
+                                    + localTime + "<br/>" 
+                                    + "<a href =https://" + cityWikipedia + ">" + cityName + "</a>"
+                                ).openPopup();
 
                                 $.ajax({
 
@@ -101,9 +103,10 @@ $(document).ready(function(){
             
                                         if (result1.status.name == "ok") {
                                             
-                                            var cityWikipedia = result1['data'][0]['wikipediaUrl'];
+                                            cityWikipedia = result1['data'][0]['wikipediaUrl'];
            
-                                            $('#wikipedia').html('<a href ="' + cityWikipedia + '"> ' + cityName + ' </a>');
+                                            $('#wikipedia').html("<a href =https://" + cityWikipedia + ">" + cityName + "</a>");
+
             
                                         }
 
@@ -156,12 +159,14 @@ $(document).ready(function(){
                             if (result.status.name == "ok") {
                                 
                                 $('#temperature').html(result.data1.temp + "°C");
-                                $('#humidity').html(result.data1.humidity + "%");                                
+                                //$('#humidity').html(result.data1.humidity + "%");                                
                                 $('#weather').html(result['data2'][0]['description']);
 
-                                var weatherIcon = result['data2'][0]['icon'];
+                                localTemperature = result.data1.temp;
+                                localWeather = result['data2'][0]['description'];
+                                localWeatherIcon = result['data2'][0]['icon'];
 
-                                $('#weatherIcon').html("<img src='http://openweathermap.org/img/wn/" + weatherIcon + "@2x.png' />");
+                                //$('#weatherIcon').html("<img src='http://openweathermap.org/img/wn/" + weatherIcon + "@2x.png' />");
 
                             }
 
@@ -188,10 +193,13 @@ $(document).ready(function(){
 
                             if (result.status.name == "ok") {
                                 
-                                $('#sunrise').html(result['data1']);
-                                $('#sunset').html(result['data2']);
+                                //$('#sunrise').html(result['data1']);
+                                //$('#sunset').html(result['data2']);
                                 $('#time').html(result['data3']);
 
+                                localTime = result['data3'];
+
+
                             }
 
                         },
@@ -199,40 +207,9 @@ $(document).ready(function(){
                             console.log(jqXHR);
                         }
 
-                       
+                                               
 
                     }); 
-
-
-                    $.ajax({
-                        url: "php/findNearbyWikipedia.php",
-                        type: 'POST',
-                        dataType: "json",
-                        data: {
-                            lat: lat,
-                            lng: lng,
-                        },   
-                        success: function(result) {
-
-                            console.log(result);
-
-                            if (result.status.name == "ok") {
-                                
-                                var nearbyWikipedia = result['data'][0]['wikipediaUrl'];
-
-                                $('#nearbyWikipedia').html('<a href ="' + nearbyWikipedia + '">Something interesting next to you awaits to be found</a>');
-
-                            }
-
-                        },
-                        error: function(jqXHR, textStatus, errorThrown) {
-                            console.log(jqXHR);
-                        }
-
-                       
-
-                    });
-
 
                 }     
                 
@@ -250,6 +227,7 @@ $(document).ready(function(){
 
     /* Dropdown menu*/
 
+    var capitalCity
 
     $.ajax({
         url: "php/navbar.php",
@@ -315,9 +293,11 @@ $(document).ready(function(){
                 
                     mymap.fitBounds(border.getBounds());
 
-                     
+                    // modal show (check) 
+
+                    $("#myModal").modal('show');
                     
-                    // sidebar content
+                    // modal content
 
                     $('#countryFlag').html("<img src='https://www.countryflags.io/" + isoCode + "/flat/64.png' />");
 
@@ -340,7 +320,7 @@ $(document).ready(function(){
                                 $('#currencySymbol').html(result['data4'][0]['symbol']);
                                 $('#language').html(result['data5'][0]['name']);
 
-
+                                capitalCity = result['data2'];
                             }
 
                         },
