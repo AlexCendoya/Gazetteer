@@ -5,7 +5,7 @@
 
     $executionStartTime = microtime(true);
 
-    $url='https://restcountries.eu/rest/v2/alpha/' . $_REQUEST['isoCode'];
+    $url='https://restcountries.com/v2/alpha/' . $_REQUEST['isoCode'];
     
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
@@ -26,6 +26,7 @@
     $output['data3'] = $decode['population'];
     $output['data4'] = $decode['currencies'];
     $output['data5'] = $decode['languages'];
+    $output['data6'] = $decode['callingCodes'];
 
     header('Content-Type: application/json; charset=UTF-8');
 

@@ -3,7 +3,6 @@ $(document).ready(function(){
 
     //map and geolocation
 
-
     var mymap = L.map('mapid').setView([47, 2], 3);
 
     var Esri_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
@@ -12,7 +11,7 @@ $(document).ready(function(){
 
     var infoButton = L.easyButton('<i class="fas fa-globe-europe fa-lg"></i>', function(btn, mymap) {
         $('#myModal').modal('show');
-    }).addTo(mymap);
+    }, {position: 'bottomright'}).addTo(mymap);
 
     if(!navigator.geolocation) {
         console.log("Your browser doesn't support geolocation")
@@ -79,6 +78,8 @@ $(document).ready(function(){
                                 cityName = r1.data.city;
 
                                 console.log(r1.data.city);
+
+                                // popup marker
 
                                 marker = L.marker(coords).addTo(mymap).bindPopup(
                                     "<h5 align='center'>You are here!</h5><h6>" + suburb + " (" + cityName + ")</h6><hr/><table><tr><td><img src='http://openweathermap.org/img/wn/" 
@@ -305,6 +306,7 @@ $(document).ready(function(){
                                 $('#currencyName').html(result['data4'][0]['name']);
                                 $('#currencySymbol').html(result['data4'][0]['symbol']);
                                 $('#language').html(result['data5'][0]['name']);
+                                $('#callingCode').html("+" + result['data6']);
 
                                 capitalCity = result['data2'];
                                 
@@ -328,19 +330,17 @@ $(document).ready(function(){
             
                                             $('#countryWeatherIcon').html("<img src='http://openweathermap.org/img/wn/" + countryWeatherIcon + "@2x.png' />");
 
-                                            //get lat/lng values of the capital city here, to later ajax call localtime with let values
-
-                                            var countryLat = result.data3.lat;
-                                            var countryLng = result.data3.lon;
+                                            let lat = result.data3.lat;
+                                            let lng = result.data3.lon;
 
 
                                             $.ajax({
-                                                url: "php/countryTime",
+                                                url: "php/localTime.php",
                                                 type: 'POST',
                                                 dataType: "json",
                                                 data: {
-                                                    countryLat: countryLat,
-                                                    countryLng: countryLng,
+                                                    lat: lat,
+                                                    lng: lng,
                                                 }, 
                                                 success: function(result) {
                                                     
@@ -356,6 +356,7 @@ $(document).ready(function(){
                                                     console.log(jqXHR);
                                                 }
                                             });
+
             
                                         }
             
@@ -366,6 +367,39 @@ $(document).ready(function(){
                                     
             
                                 });
+
+                                
+                                $.ajax({
+
+                                    url: "php/capitalWikipedia.php",
+                                    type: 'POST',
+                                    dataType: "json",
+                                    data: {"capitalCity": capitalCity},   
+
+                                    success: function(result1) {
+            
+                                        console.log(result1);
+            
+                                        if (result1.status.name == "ok") {
+                                            
+                                            var capitalCityWikipedia = result1['data'][0]['wikipediaUrl'];
+           
+                                            $('#capitalWikipedia').html("<a href =https://" + capitalCityWikipedia + ">" + capitalCity + "</a>");
+            
+                                        }
+
+          
+                                    },
+
+                                    error: function(jqXHR, textStatus, errorThrown) {
+
+                                        console.log(jqXHR);
+
+                                    }
+                                        
+    
+                                }); 
+
 
 
                             }
