@@ -10,7 +10,7 @@ $(document).ready(function(){
         attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
     }).addTo(mymap);
 
-    var infoButton = L.easyButton('<i class="fas fa-globe-europe"></i>', function(btn, mymap) {
+    var infoButton = L.easyButton('<i class="fas fa-globe-europe fa-lg"></i>', function(btn, mymap) {
         $('#myModal').modal('show');
     }).addTo(mymap);
 
@@ -22,7 +22,7 @@ $(document).ready(function(){
 
     // latitude&longitude values
 
-    var lat, lng, border, borderStyle, borderLines
+    var lat, lng, border
 
     function getPosition(position) {
         lat = position.coords.latitude
@@ -34,7 +34,7 @@ $(document).ready(function(){
         
         //geolocation out of lat/lng: get ISO code out API and use it highlight location
         
-        var marker, suburb, cityName, localTime, localTemperature, localWeather, localWeatherIcon, cityWikipedia
+        var marker, suburb, cityName, localTime, localTemperature, localWeather, localHumidity, localWeatherIcon, cityWikipedia
 
         $.ajax({
             url: "php/countryCode.php",
@@ -53,7 +53,7 @@ $(document).ready(function(){
                     $("#selectCountry").val(result['data'].toUpperCase()).change();
 
 
-                    //modal content
+                    //modal and pop-up content
 
                     $.ajax({
 
@@ -85,7 +85,7 @@ $(document).ready(function(){
                                     + localWeatherIcon 
                                     + "@2x.png' /></td><td>" 
                                     + localTemperature + "°C </td></tr></table>"
-                                    + localWeather + "<br/>" 
+                                    + localWeather + ", " + localHumidity + "% humidity <br/>" 
                                     + localTime + "<br/>" 
                                     + "<a href =https://" + cityWikipedia + ">" + cityName + "</a>"
                                 ).openPopup();
@@ -119,16 +119,13 @@ $(document).ready(function(){
 
                                     }
                                         
-        
-
+    
                                 }); 
 
  
-
                             }
 
  
-
                         },
 
                         error: function(jqXHR, textStatus, errorThrown) {
@@ -136,16 +133,13 @@ $(document).ready(function(){
                             console.log(jqXHR);
 
                         }
-
-                        
-
- 
+                    
 
                     });
 
 
                     $.ajax({
-                        url: "php/weather.php",
+                        url: "php/localWeather.php",
                         type: 'POST',
                         dataType: "json",
                         data: {
@@ -157,16 +151,11 @@ $(document).ready(function(){
                             console.log(result);
 
                             if (result.status.name == "ok") {
-                                
-                                $('#temperature').html(result.data1.temp + "°C");
-                                //$('#humidity').html(result.data1.humidity + "%");                                
-                                $('#weather').html(result['data2'][0]['description']);
 
                                 localTemperature = result.data1.temp;
+                                localHumidity = result.data1.humidity;
                                 localWeather = result['data2'][0]['description'];
                                 localWeatherIcon = result['data2'][0]['icon'];
-
-                                //$('#weatherIcon').html("<img src='http://openweathermap.org/img/wn/" + weatherIcon + "@2x.png' />");
 
                             }
 
@@ -180,7 +169,7 @@ $(document).ready(function(){
                     
 
                     $.ajax({
-                        url: "php/time.php",
+                        url: "php/localTime.php",
                         type: 'POST',
                         dataType: "json",
                         data: {
@@ -193,11 +182,9 @@ $(document).ready(function(){
 
                             if (result.status.name == "ok") {
                                 
-                                //$('#sunrise').html(result['data1']);
-                                //$('#sunset').html(result['data2']);
-                                $('#time').html(result['data3']);
+                                //$('#time').html(result['data3']);
 
-                                localTime = result['data3'];
+                                localTime = result['data'];
 
 
                             }
@@ -227,13 +214,11 @@ $(document).ready(function(){
 
     /* Dropdown menu*/
 
-    var capitalCity
 
     $.ajax({
         url: "php/navbar.php",
         type: 'POST',
-        dataType: "json", 
-        data: 'data',     
+        dataType: "json",     
         success: function(result) {
 
             console.log(result);
@@ -259,6 +244,7 @@ $(document).ready(function(){
 
     /* Borders */
 
+    var capitalCity
 
     $('#selectCountry').change(function() {
 
@@ -279,9 +265,9 @@ $(document).ready(function(){
                         mymap.removeLayer(border);
                     }
 
-                    borderLines = result["data"];
+                    var borderLines = result["data"];
 
-                    borderStyle = {
+                    var borderStyle = {
                         "color": "#ff0000",     
                         "weight": 10,
                         "opacity": 0.5
@@ -321,6 +307,67 @@ $(document).ready(function(){
                                 $('#language').html(result['data5'][0]['name']);
 
                                 capitalCity = result['data2'];
+                                
+                                
+                                $.ajax({
+                                    url: "php/countryWeather.php",
+                                    type: 'POST',
+                                    dataType: "json",
+                                    data: {"capitalCity": capitalCity},
+                                    success: function(result) {
+            
+                                        console.log(result);
+            
+                                        if (result.status.name == "ok") {
+                                            
+                                            $('#countryTemperature').html(result.data1.temp + "°C");
+                                            $('#countryHumidity').html(result.data1.humidity + "%");
+                                            $('#countryWeather').html(result['data2'][0]['description']);
+
+                                            var countryWeatherIcon = result['data2'][0]['icon'];
+            
+                                            $('#countryWeatherIcon').html("<img src='http://openweathermap.org/img/wn/" + countryWeatherIcon + "@2x.png' />");
+
+                                            //get lat/lng values of the capital city here, to later ajax call localtime with let values
+
+                                            var countryLat = result.data3.lat;
+                                            var countryLng = result.data3.lon;
+
+
+                                            $.ajax({
+                                                url: "php/countryTime",
+                                                type: 'POST',
+                                                dataType: "json",
+                                                data: {
+                                                    countryLat: countryLat,
+                                                    countryLng: countryLng,
+                                                }, 
+                                                success: function(result) {
+                                                    
+                                                    console.log(result);  
+
+                                                    if (result.status.name == "ok") {
+
+                                                        $('#countryTime').html(result['data']);
+
+                                                    }
+                                                },
+                                                error: function(jqXHR, textStatus, errorThrown) {
+                                                    console.log(jqXHR);
+                                                }
+                                            });
+            
+                                        }
+            
+                                    },
+                                    error: function(jqXHR, textStatus, errorThrown) {
+                                        console.log(jqXHR);
+                                    }
+                                    
+            
+                                });
+
+
                             }
 
                         },
@@ -328,6 +375,7 @@ $(document).ready(function(){
                             console.log(jqXHR);
                         }
                     });
+
 
 
 

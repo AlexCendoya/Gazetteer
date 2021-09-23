@@ -21,9 +21,7 @@
     $output['status']['name'] = "ok";
     $output['status']['description'] = "success";
     $output['status']['returnedIn'] = intval((microtime(true) - $executionStartTime) * 1000) . " ms";
-    $output['data1'] = $decode['sunrise'];
-    $output['data2'] = $decode['sunset'];
-    $output['data3'] = $decode['time'];
+    $output['data'] = $decode['time'];
 
 
     header('Content-Type: application/json; charset=UTF-8');
