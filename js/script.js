@@ -1,5 +1,13 @@
 $(document).ready(function(){
 
+    //Loader - to be checked
+    
+    $(window).on("load", function() {
+        $('#preloader').fadeOut('slow', function() {
+            $(this).remove();
+        });
+    });
+    
 
     //map and geolocation
 
@@ -183,8 +191,6 @@ $(document).ready(function(){
 
                             if (result.status.name == "ok") {
                                 
-                                //$('#time').html(result['data3']);
-
                                 localTime = result['data'];
 
 
@@ -276,11 +282,12 @@ $(document).ready(function(){
 
                     border = L.geoJSON(borderLines, {
                         style : borderStyle
-                    }).addTo(mymap);               
+                    }).addTo(mymap); 
+                    
                 
                     mymap.fitBounds(border.getBounds());
 
-                    // modal show (check) 
+                    // modal show
 
                     $("#myModal").modal('show');
                     
@@ -310,7 +317,8 @@ $(document).ready(function(){
 
                                 capitalCity = result['data2'];
                                 
-                                
+                                // capital city temperature, humidity, weather, weather icon and coordinates, in order to retrieve local time
+
                                 $.ajax({
                                     url: "php/countryWeather.php",
                                     type: 'POST',
@@ -329,6 +337,8 @@ $(document).ready(function(){
                                             var countryWeatherIcon = result['data2'][0]['icon'];
             
                                             $('#countryWeatherIcon').html("<img src='http://openweathermap.org/img/wn/" + countryWeatherIcon + "@2x.png' />");
+
+                                            //reassing the lat, lng values to capital city in order to get a nationally representative response
 
                                             let lat = result.data3.lat;
                                             let lng = result.data3.lon;
@@ -349,6 +359,44 @@ $(document).ready(function(){
                                                     if (result.status.name == "ok") {
 
                                                         $('#countryTime').html(result['data']);
+
+                                                    }
+                                                },
+                                                error: function(jqXHR, textStatus, errorThrown) {
+                                                    console.log(jqXHR);
+                                                }
+                                            });
+
+                                            //marker cluster - in process
+
+                                            $.ajax({
+                                                url: "php/cluster.php",
+                                                type: 'POST',
+                                                dataType: "json",
+                                                data: {
+                                                    lat: lat,
+                                                    lng: lng,
+                                                }, 
+                                                success: function(result) {
+                                                    
+                                                    console.log(result);  
+
+                                                    if (result.status.name == "ok") {
+
+                                                        var addressPoints = result['data'];
+
+                                                        var markers = L.markerClusterGroup();
+
+                                                        for (var i = 0; i < addressPoints.length; i++) {
+                                                            var a = addressPoints[i];
+                                                            let marker = L.marker(new L.LatLng(a[0], a[1]), {
+                                                                title: title
+                                                            });
+                                                            marker.bindPopup(title);
+                                                            markers.addLayer(marker);
+                                                        }
+
+                                                        mymap.addLayer(markers);
 
                                                     }
                                                 },
