@@ -1,13 +1,14 @@
 $(document).ready(function(){
 
-    //Loader - to be checked
-    
+    //Loader
+
+
     $(window).on("load", function() {
         $('#preloader').fadeOut('slow', function() {
             $(this).remove();
         });
     });
-    
+ 
 
     //map and geolocation
 
@@ -41,7 +42,7 @@ $(document).ready(function(){
         
         //geolocation out of lat/lng: get ISO code out API and use it highlight location
         
-        var marker, suburb, cityName, localTime, localTemperature, localWeather, localHumidity, localWeatherIcon, cityWikipedia
+        var marker, localTime, localTemperature, localWeather, localHumidity, localWeatherIcon
 
         $.ajax({
             url: "php/countryCode.php",
@@ -58,7 +59,6 @@ $(document).ready(function(){
                 if (result.status.name == "ok") {
 
                     $("#selectCountry").val(result['data'].toUpperCase()).change();
-
 
                     //modal and pop-up content
 
@@ -77,68 +77,35 @@ $(document).ready(function(){
                             console.log(r1);
 
                             if (r1.status.name == "ok") {
-                           
 
                                 $('#cityName').html(r1.data.suburb + "(" + r1.data.city + ")");
 
-                                suburb = r1.data.suburb
-
-                                cityName = r1.data.city;
+                                var suburb = r1.data.suburb
+                                var cityName = r1.data.city;
+                                var tidiedCity = cityName.replace(/ /g,"_");
 
                                 console.log(r1.data.city);
 
                                 // popup marker
 
                                 marker = L.marker(coords).addTo(mymap).bindPopup(
+
                                     "<h5 align='center'>You are here!</h5><h6>" + suburb + " (" + cityName + ")</h6><hr/><table><tr><td><img src='http://openweathermap.org/img/wn/" 
                                     + localWeatherIcon 
                                     + "@2x.png' /></td><td>" 
-                                    + localTemperature + "°C </td></tr></table>"
+                                    + localTemperature + "°C</td></tr></table>"
                                     + localWeather + ", " + localHumidity + "% humidity <br/>" 
                                     + localTime + "<br/>" 
-                                    + "<a href =https://" + cityWikipedia + ">" + cityName + "</a>"
+                                    + "<a href =https://en.wikipedia.org/wiki/" + tidiedCity + ">" + cityName + "</a>"
+
                                 ).openPopup();
 
-                                $.ajax({
-
-                                    url: "php/wikipedia.php",
-                                    type: 'POST',
-                                    dataType: "json",
-                                    data: {cityName: encodeURI(r1.data.city)},   
-
-                                    success: function(result1) {
-            
-                                        console.log(result1);
-            
-                                        if (result1.status.name == "ok") {
-                                            
-                                            cityWikipedia = result1['data'][0]['wikipediaUrl'];
-           
-                                            $('#wikipedia').html("<a href =https://" + cityWikipedia + ">" + cityName + "</a>");
-
-            
-                                        }
-
-          
-                                    },
-
-                                    error: function(jqXHR, textStatus, errorThrown) {
-
-                                        console.log(jqXHR);
-
-                                    }
-                                        
-    
-                                }); 
-
- 
                             }
 
  
                         },
 
                         error: function(jqXHR, textStatus, errorThrown) {
-
                             console.log(jqXHR);
 
                         }
@@ -193,15 +160,13 @@ $(document).ready(function(){
                                 
                                 localTime = result['data'];
 
-
                             }
 
                         },
                         error: function(jqXHR, textStatus, errorThrown) {
                             console.log(jqXHR);
                         }
-
-                                               
+                       
 
                     }); 
 
@@ -251,7 +216,6 @@ $(document).ready(function(){
 
     /* Borders */
 
-    var capitalCity
 
     $('#selectCountry').change(function() {
 
@@ -295,7 +259,6 @@ $(document).ready(function(){
 
                     $('#countryFlag').html("<img src='https://www.countryflags.io/" + isoCode + "/flat/64.png' />");
 
-
                     $.ajax({
                         url: "php/restCountries.php",
                         type: 'POST',
@@ -310,13 +273,16 @@ $(document).ready(function(){
                                 $('#countryName').html(result['data1']);
                                 $('#capitalCity').html(result['data2']);
                                 $('#population').html(result['data3']);
-                                $('#currencyName').html(result['data4'][0]['name']);
-                                $('#currencySymbol').html(result['data4'][0]['symbol']);
+                                $('#currency').html(result['data4'][0]['name'] + " (" + result['data4'][0]['symbol'] + ")");
                                 $('#language').html(result['data5'][0]['name']);
                                 $('#callingCode').html("+" + result['data6']);
 
-                                capitalCity = result['data2'];
-                                
+                                var countryName = result['data1'];
+                                var capitalCity = result['data2'];
+                                var tidiedCountry = countryName.replace(/ /g,"_");
+
+                                $('#countryWikipedia').html("<a href =https://en.wikipedia.org/wiki/" + tidiedCountry + ">" + countryName + "</a>");
+
                                 // capital city temperature, humidity, weather, weather icon and coordinates, in order to retrieve local time
 
                                 $.ajax({
@@ -338,7 +304,7 @@ $(document).ready(function(){
             
                                             $('#countryWeatherIcon').html("<img src='http://openweathermap.org/img/wn/" + countryWeatherIcon + "@2x.png' />");
 
-                                            //reassing the lat, lng values to capital city in order to get a nationally representative response
+                                            //reassign the lat, lng values to capital city in order to get a nationally representative response
 
                                             let lat = result.data3.lat;
                                             let lng = result.data3.lon;
@@ -373,10 +339,7 @@ $(document).ready(function(){
                                                 url: "php/cluster.php",
                                                 type: 'POST',
                                                 dataType: "json",
-                                                data: {
-                                                    lat: lat,
-                                                    lng: lng,
-                                                }, 
+                                                data: {"tidiedCountry": tidiedCountry},
                                                 success: function(result) {
                                                     
                                                     console.log(result);  
@@ -385,18 +348,17 @@ $(document).ready(function(){
 
                                                         var addressPoints = result['data'];
 
-                                                        var markers = L.markerClusterGroup();
+                                                        var markerCluster = L.markerClusterGroup();
 
                                                         for (var i = 0; i < addressPoints.length; i++) {
-                                                            var a = addressPoints[i];
-                                                            let marker = L.marker(new L.LatLng(a[0], a[1]), {
-                                                                title: title
-                                                            });
-                                                            marker.bindPopup(title);
-                                                            markers.addLayer(marker);
+                                                            var popup = addressPoints[i];
+
+                                                            var m = L.marker([addressPoints[i].coordinates.latitude, addressPoints[i].coordinates.longitude]).bindPopup(popup);
+
+                                                            markerCluster.addLayer(m);
                                                         }
 
-                                                        mymap.addLayer(markers);
+                                                        mymap.addLayer(markerCluster);
 
                                                     }
                                                 },
@@ -412,44 +374,10 @@ $(document).ready(function(){
                                     error: function(jqXHR, textStatus, errorThrown) {
                                         console.log(jqXHR);
                                     }
-                                    
-            
+                                              
                                 });
 
                                 
-                                $.ajax({
-
-                                    url: "php/capitalWikipedia.php",
-                                    type: 'POST',
-                                    dataType: "json",
-                                    data: {"capitalCity": capitalCity},   
-
-                                    success: function(result1) {
-            
-                                        console.log(result1);
-            
-                                        if (result1.status.name == "ok") {
-                                            
-                                            var capitalCityWikipedia = result1['data'][0]['wikipediaUrl'];
-           
-                                            $('#capitalWikipedia').html("<a href =https://" + capitalCityWikipedia + ">" + capitalCity + "</a>");
-            
-                                        }
-
-          
-                                    },
-
-                                    error: function(jqXHR, textStatus, errorThrown) {
-
-                                        console.log(jqXHR);
-
-                                    }
-                                        
-    
-                                }); 
-
-
-
                             }
 
                         },
@@ -457,8 +385,6 @@ $(document).ready(function(){
                             console.log(jqXHR);
                         }
                     });
-
-
 
 
                 }
