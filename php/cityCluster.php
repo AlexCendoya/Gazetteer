@@ -6,10 +6,7 @@
     $executionStartTime = microtime(true);
 
     $url='https://www.triposo.com/api/20210615/location.json?part_of=' . $_REQUEST['tidiedCountry'] . '&tag_labels=city&count=10&order_by=-score&fields=name,id,snippet,coordinates,score,type&account=Z1SBIW0E&token=w07hdb8uk0w75rhs4drefdvijxpbtwg0';
-
-    //maybe include also another one for points of interest?
-    //$url='https://www.triposo.com/api/20210615/poi.json?tag_labels=cuisine-Pizza&location_id=' . $_REQUEST['tidiedCountry'] . '&tag_labels=city&count=10&order_by=-score&fields=name,best_for,coordinates,score,id&account=Z1SBIW0E&token=w07hdb8uk0w75rhs4drefdvijxpbtwg0';
-    
+   
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);

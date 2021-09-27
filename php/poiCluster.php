@@ -5,8 +5,8 @@
 
     $executionStartTime = microtime(true);
 
-    $url='https://restcountries.com/v2/alpha/' . $_REQUEST['isoCode'];
-    
+    $url='https://www.triposo.com/api/20210615/poi.json?location_id=' . $_REQUEST['tidiedCountry'] . '&count=10&order_by=-score&fields=name,best_for,coordinates,score,id&account=Z1SBIW0E&token=w07hdb8uk0w75rhs4drefdvijxpbtwg0';
+
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -21,10 +21,8 @@
     $output['status']['name'] = "ok";
     $output['status']['description'] = "success";
     $output['status']['returnedIn'] = intval((microtime(true) - $executionStartTime) * 1000) . " ms";
-    $output['data1'] = $decode['population'];
-    $output['data2'] = $decode['currencies'];
-    $output['data3'] = $decode['languages'];
-    $output['data4'] = $decode['callingCodes'];
+    $output['data'] = $decode['results'];
+
 
     header('Content-Type: application/json; charset=UTF-8');
 
