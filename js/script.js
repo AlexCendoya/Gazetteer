@@ -1,3 +1,4 @@
+
 $(document).ready(function(){
 
     //map and geolocation
@@ -123,7 +124,7 @@ $(document).ready(function(){
 
 									var suburb = r1.data.suburb
 									var cityName = r1.data.city;
-									var tidiedCity = cityName.replace(/ /g,"_");
+									var tidiedLocation = cityName.replace(/ /g,"_");
 
 									console.log(r1.data.city);
 
@@ -156,7 +157,7 @@ $(document).ready(function(){
 													+ localTemperature + "°C</td></tr></table>"
 													+ localWeather + ", " + localHumidity + "% humidity <br/>" 
 													+ localTime + "<br/>" 
-													+ "<a href =https://en.wikipedia.org/wiki/" + tidiedCity + ">" + cityName + "</a>"
+													+ "<a href =https://en.wikipedia.org/wiki/" + tidiedLocation + ">" + cityName + "</a>"
 
 												).openPopup();
 
@@ -306,8 +307,8 @@ $(document).ready(function(){
                                     if (result.status.name == "ok") {
 
                                         $('#population').html(result['data1']);
-										$('#currency').html(result['data2'][0]['name'] + " (" + result['data2'][0]['symbol'] + ")");
-										$('#language').html(result['data3'][0]['name']);
+
+
 										$('#callingCode').html("+" + result['data4']);
                                     }
 
@@ -331,6 +332,7 @@ $(document).ready(function(){
 
 										$('#countryName').html(result.data1.official);
 										$('#capitalCity').html(result.data2);
+										$('#currency').html(result['data2'][0]['name'] + " (" + result['data2'][0]['symbol'] + ")");
 
                                         console.log(result['data2']);
                                         
@@ -416,7 +418,12 @@ $(document).ready(function(){
                                                                         prefix: 'fa'
                                                                     });
 
-																	let m = L.marker([cityPoints[i].coordinates.latitude, cityPoints[i].coordinates.longitude], {icon: yellowMarker}).bindPopup("<h6 align='center'>" + cityPoints[i].name + "</h6>" + cityPoints[i].snippet);
+                                                                    var tidiedCity = cityPoints[i].name.replace(/ /g,"_");
+
+																	let m = L.marker([cityPoints[i].coordinates.latitude, cityPoints[i].coordinates.longitude], {icon: yellowMarker}).bindPopup(
+                                                                        "<h6 align='center'>" + cityPoints[i].name + "</h6>" + cityPoints[i].snippet + "<br/>" 
+                                                                        + "<a href =https://en.wikipedia.org/wiki/" + tidiedCity + ">" + cityPoints[i].name + "</a>"
+                                                                        );
                                                                     
 																	markerCluster1.addLayer(m);
 																}
@@ -454,7 +461,12 @@ $(document).ready(function(){
                                                                         prefix: 'fa'
                                                                     });
 
-																	let m = L.marker([poiPoints[i].coordinates.latitude, poiPoints[i].coordinates.longitude], {icon: redMarker}).bindPopup("<h6 align='center'>" + poiPoints[i].name + "</h6>");
+                                                                    var tidiedPoi = poiPoints[i].name.replace(/ /g,"_");
+
+																	let m = L.marker([poiPoints[i].coordinates.latitude, poiPoints[i].coordinates.longitude], {icon: redMarker}).bindPopup(
+                                                                        "<h6 align='center'>" + poiPoints[i].name + "</h6>" + "<br/>" 
+                                                                        + "<a href =https://en.wikipedia.org/wiki/" + tidiedPoi + ">" + poiPoints[i].name + "</a>"
+                                                                        );
 
 																	markerCluster2.addLayer(m);
 																}
