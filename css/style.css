@@ -36,11 +36,6 @@
     /* modal */
 
 
-    /*
-    .modal {
-        width: 100px;
-    }
-    */
     .modal-content {
         font-family: sans-serif;
     }
@@ -59,19 +54,14 @@
         font-weight: bolder;
     }
 
-    /*
-    @media screen and (max-width: 1200px) {
-        .modal { 
-            width: 100%;
-        }
-    }
     
-    @media screen and (min-width: 1200px) {
-        .modal {
-            width: 30%;
+    @media screen and (max-width: 768px) {
+        .modal { 
+            max-height: 80% !important;
+            max-width: auto !important;
         }
     }
-    */
+
 
     /*zoom control*/
 

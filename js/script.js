@@ -330,12 +330,12 @@ $(document).ready(function(){
 									if (result.status.name == "ok") {
 
 										$('#countryName').html(result.data1.official);
-										$('#capitalCity').html(result['data2']);
+										$('#capitalCity').html(result.data2);
 
                                         console.log(result['data2']);
-
+                                        
 										var countryName = result.data1.common;
-										var capitalCity = result['data2'];
+										var capitalCity = result.data2;
 										var tidiedCountry = countryName.replace(/ /g,"_");
 
 										$('#countryWikipedia').html("<a href =https://en.wikipedia.org/wiki/" + tidiedCountry + ">" + countryName + "</a>");
