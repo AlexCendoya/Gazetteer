@@ -24,7 +24,7 @@ $(document).ready(function(){
 		//Dropdown menu
 
 		$.ajax({
-			url: "php/navbar.php",
+			url: "php/navBar.php",
 			type: 'POST',
 			dataType: "json",     
 			success: function(result) {
