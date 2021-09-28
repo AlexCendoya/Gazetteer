@@ -307,9 +307,12 @@ $(document).ready(function(){
                                     if (result.status.name == "ok") {
 
                                         $('#population').html(result['data1']);
-
-
+										$('#currency').html(result['data2'][0]['name'] + " (" + result['data2'][0]['symbol'] + ")");
+										$('#language').html(result['data3'][0]['name']);
 										$('#callingCode').html("+" + result['data4']);
+
+										console.log(result['data2']);
+										console.log(result['data3']);
                                     }
 
 
@@ -332,9 +335,6 @@ $(document).ready(function(){
 
 										$('#countryName').html(result.data1.official);
 										$('#capitalCity').html(result.data2);
-										$('#currency').html(result['data2'][0]['name'] + " (" + result['data2'][0]['symbol'] + ")");
-
-                                        console.log(result['data2']);
                                         
 										var countryName = result.data1.common;
 										var capitalCity = result.data2;
@@ -412,10 +412,9 @@ $(document).ready(function(){
 																for (let i = 0; i < cityPoints.length; i++) {
 
                                                                     var yellowMarker = L.ExtraMarkers.icon({
-                                                                        icon: 'fa-city',
                                                                         markerColor: 'yellow',
                                                                         shape: 'square',
-                                                                        prefix: 'fa'
+																		
                                                                     });
 
                                                                     var tidiedCity = cityPoints[i].name.replace(/ /g,"_");
@@ -454,16 +453,14 @@ $(document).ready(function(){
 
 																for (let i = 0; i < poiPoints.length; i++) {
 
-                                                                    var redMarker = L.ExtraMarkers.icon({
-                                                                        icon: 'fa-exclamation',
+                                                                    var purpleMarker = L.ExtraMarkers.icon({
                                                                         markerColor: 'purple',
-                                                                        shape: 'square',
-                                                                        prefix: 'fa'
+                                                                        shape: 'star',
                                                                     });
 
                                                                     var tidiedPoi = poiPoints[i].name.replace(/ /g,"_");
 
-																	let m = L.marker([poiPoints[i].coordinates.latitude, poiPoints[i].coordinates.longitude], {icon: redMarker}).bindPopup(
+																	let m = L.marker([poiPoints[i].coordinates.latitude, poiPoints[i].coordinates.longitude], {icon: purpleMarker}).bindPopup(
                                                                         "<h6 align='center'>" + poiPoints[i].name + "</h6>" + "<br/>" 
                                                                         + "<a href =https://en.wikipedia.org/wiki/" + tidiedPoi + ">" + poiPoints[i].name + "</a>"
                                                                         );
