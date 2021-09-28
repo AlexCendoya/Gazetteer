@@ -85,6 +85,15 @@
         margin-top: 0;
     }
 
+    /*icons*/
+
+    .extra-marker svg {
+        color: #333;
+        margin-top: 10px;
+        display: inline-block;
+        font-size: 14px;
+    }
+
     /*preloader*/
 
     #preloader {

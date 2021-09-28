@@ -412,9 +412,10 @@ $(document).ready(function(){
 																for (let i = 0; i < cityPoints.length; i++) {
 
                                                                     var yellowMarker = L.ExtraMarkers.icon({
+																		icon: 'fa-city',
                                                                         markerColor: 'yellow',
                                                                         shape: 'square',
-																		
+																		prefix: 'fa',
                                                                     });
 
                                                                     var tidiedCity = cityPoints[i].name.replace(/ /g,"_");
@@ -454,8 +455,10 @@ $(document).ready(function(){
 																for (let i = 0; i < poiPoints.length; i++) {
 
                                                                     var purpleMarker = L.ExtraMarkers.icon({
+																		icon: 'fa-exclamation',
                                                                         markerColor: 'purple',
                                                                         shape: 'star',
+																		prefix: 'fa',
                                                                     });
 
                                                                     var tidiedPoi = poiPoints[i].name.replace(/ /g,"_");
