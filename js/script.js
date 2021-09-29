@@ -29,13 +29,13 @@ $(document).ready(function(){
 			dataType: "json",     
 			success: function(result) {
 
-				console.log(result);
+				//console.log(result);
 
 				if (result.status.name == "ok") {
 
 					$.each(result['data'], function (i, val) {
 
-						$('#selectCountry').append(`<option value="${val['properties']['iso_a2']}">${val['properties']['name']}</option>`);
+						$('#selectCountry').append(`<option value="${val['iso_a2']}">${val['name']}</option>`);
 
 					});
 
@@ -116,7 +116,7 @@ $(document).ready(function(){
 
 							success: function(r1) {
 
-								console.log(r1);
+								//console.log(r1);
 
 								if (r1.status.name == "ok") {
 
@@ -126,7 +126,7 @@ $(document).ready(function(){
 									var cityName = r1.data.city;
 									var tidiedLocation = cityName.replace(/ /g,"_");
 
-									console.log(r1.data.city);
+									//console.log(r1.data.city);
 
 									$.ajax({
 										url: "php/localWeather.php",
@@ -138,13 +138,13 @@ $(document).ready(function(){
 										},   
 										success: function(result) {
 
-											console.log(result);
+											//console.log(result);
 
 											if (result.status.name == "ok") {
 
 												localTemperature = result.data1.temp;
 												localHumidity = result.data1.humidity;
-												localWeather = result['data2'][0]['description'];
+												localWeather = result['data2'][0]['description'].charAt(0).toUpperCase() + result['data2'][0]['description'].slice(1);
 												localWeatherIcon = result['data2'][0]['icon'];
 
 												// popup marker
@@ -157,7 +157,7 @@ $(document).ready(function(){
 													+ localTemperature + "°C</td></tr></table>"
 													+ localWeather + ", " + localHumidity + "% humidity <br/>" 
 													+ localTime + "<br/>" 
-													+ "<a href =https://en.wikipedia.org/wiki/" + tidiedLocation + ">" + cityName + "</a>"
+													+ "<a href =https://en.wikipedia.org/wiki/" + tidiedLocation + " target='_blank'>" + cityName + "</a>"
 
 												).openPopup();
 
@@ -193,7 +193,7 @@ $(document).ready(function(){
 							},   
 							success: function(result) {
 
-								console.log(result);
+								//console.log(result);
 
 								if (result.status.name == "ok") {
 
@@ -245,7 +245,7 @@ $(document).ready(function(){
 				
 			}
 			
-			console.log("Country we are in: " + isoCode);			
+			//console.log("Country we are in: " + isoCode);			
 
 			$.ajax({
 				url: "php/borders.php",
@@ -254,7 +254,7 @@ $(document).ready(function(){
 				data: {"isoCode": isoCode},  
 				success: function(result) {
 
-					console.log(result);
+					//console.log(result);
 
 					if (result.status.name == "ok") {
 
@@ -302,7 +302,7 @@ $(document).ready(function(){
 								data: {"isoCode": isoCode}, 
 								success: function(result) {
 
-                                    console.log(result);
+                                    //console.log(result);
 
                                     if (result.status.name == "ok") {
 
@@ -311,8 +311,6 @@ $(document).ready(function(){
 										$('#language').html(result['data3'][0]['name']);
 										$('#callingCode').html("+" + result['data4']);
 
-										console.log(result['data2']);
-										console.log(result['data3']);
                                     }
 
 
@@ -329,18 +327,17 @@ $(document).ready(function(){
 								data: {"isoCode": isoCode},  
 								success: function(result) {
 
-									console.log(result);
+									//console.log(result);
 
 									if (result.status.name == "ok") {
 
-										$('#countryName').html(result.data1.official);
-										$('#capitalCity').html(result.data2);
-                                        
 										var countryName = result.data1.common;
 										var capitalCity = result.data2;
 										var tidiedCountry = countryName.replace(/ /g,"_");
 
-										$('#countryWikipedia').html("<a href =https://en.wikipedia.org/wiki/" + tidiedCountry + ">" + countryName + "</a>");
+										$('#countryName').html(result.data1.official);
+										$('#capitalCity').html(capitalCity);
+										$('#countryWikipedia').html("<a href =https://en.wikipedia.org/wiki/" + tidiedCountry + " target='_blank'>" + countryName + "</a>");
 
 										// capital city temperature, humidity, weather, weather icon and coordinates, in order to retrieve local time
 
@@ -351,13 +348,13 @@ $(document).ready(function(){
 											data: {"capitalCity": capitalCity},
 											success: function(result) {
 
-												console.log(result);
+												//console.log(result);
 
 												if (result.status.name == "ok") {
 
 													$('#countryTemperature').html(result.data1.temp + "°C");
 													$('#countryHumidity').html(result.data1.humidity + "%");
-													$('#countryWeather').html(result['data2'][0]['description']);
+													$('#countryWeather').html(result['data2'][0]['description'].charAt(0).toUpperCase() + result['data2'][0]['description'].slice(1));
 
 													var countryWeatherIcon = result['data2'][0]['icon'];
 
@@ -367,7 +364,6 @@ $(document).ready(function(){
 
 													let lat = result.data3.lat;
 													let lng = result.data3.lon;
-
 
 													$.ajax({
 														url: "php/localTime.php",
@@ -379,7 +375,7 @@ $(document).ready(function(){
 														}, 
 														success: function(result) {
 
-															console.log(result);  
+															//console.log(result);  
 
 															if (result.status.name == "ok") {
 
@@ -392,95 +388,6 @@ $(document).ready(function(){
 														}
 													});
 
-													//marker clusters - in process
-
-													$.ajax({
-														url: "php/cityCluster.php",
-														type: 'POST',
-														dataType: "json",
-														data: {"tidiedCountry": tidiedCountry},
-														success: function(result) {
-
-															console.log(result);  
-
-															if (result.status.name == "ok") {
-
-																var cityPoints = result['data'];
-
-																markerCluster1 = L.markerClusterGroup();
-
-																for (let i = 0; i < cityPoints.length; i++) {
-
-                                                                    var yellowMarker = L.ExtraMarkers.icon({
-																		icon: 'fa-city',
-                                                                        markerColor: 'yellow',
-                                                                        shape: 'square',
-																		prefix: 'fa',
-                                                                    });
-
-                                                                    var tidiedCity = cityPoints[i].name.replace(/ /g,"_");
-
-																	let m = L.marker([cityPoints[i].coordinates.latitude, cityPoints[i].coordinates.longitude], {icon: yellowMarker}).bindPopup(
-                                                                        "<h6 align='center'>" + cityPoints[i].name + "</h6>" + cityPoints[i].snippet + "<br/>" 
-                                                                        + "<a href =https://en.wikipedia.org/wiki/" + tidiedCity + ">" + cityPoints[i].name + "</a>"
-                                                                        );
-                                                                    
-																	markerCluster1.addLayer(m);
-																}
-
-																mymap.addLayer(markerCluster1);
-
-															}
-														},
-														error: function(jqXHR, textStatus, errorThrown) {
-															console.log(jqXHR);
-														}
-													});
-
-                                                    $.ajax({
-														url: "php/poiCluster.php",
-														type: 'POST',
-														dataType: "json",
-														data: {"tidiedCountry": tidiedCountry},
-														success: function(result) {
-
-															console.log(result);  
-
-															if (result.status.name == "ok") {
-
-																var poiPoints = result['data'];
-
-																markerCluster2 = L.markerClusterGroup();
-
-																for (let i = 0; i < poiPoints.length; i++) {
-
-                                                                    var purpleMarker = L.ExtraMarkers.icon({
-																		icon: 'fa-exclamation',
-                                                                        markerColor: 'purple',
-                                                                        shape: 'star',
-																		prefix: 'fa',
-                                                                    });
-
-                                                                    var tidiedPoi = poiPoints[i].name.replace(/ /g,"_");
-
-																	let m = L.marker([poiPoints[i].coordinates.latitude, poiPoints[i].coordinates.longitude], {icon: purpleMarker}).bindPopup(
-                                                                        "<h6 align='center'>" + poiPoints[i].name + "</h6>" + "<br/>" 
-                                                                        + "<a href =https://en.wikipedia.org/wiki/" + tidiedPoi + ">" + poiPoints[i].name + "</a>"
-                                                                        );
-
-																	markerCluster2.addLayer(m);
-																}
-
-																mymap.addLayer(markerCluster2);
-
-															}
-														},
-														error: function(jqXHR, textStatus, errorThrown) {
-															console.log(jqXHR);
-														}
-													});
-
-
 												}
 
 											},
@@ -488,6 +395,95 @@ $(document).ready(function(){
 												console.log(jqXHR);
 											}
 
+										});
+
+
+										//marker clusters
+
+										$.ajax({
+											url: "php/cityCluster.php",
+											type: 'POST',
+											dataType: "json",
+											data: {"tidiedCountry": tidiedCountry},
+											success: function(result) {
+
+												//console.log(result);  
+
+												if (result.status.name == "ok") {
+
+													var cityPoints = result['data'];
+
+													markerCluster1 = L.markerClusterGroup();
+
+													for (let i = 0; i < cityPoints.length; i++) {
+
+														var yellowMarker = L.ExtraMarkers.icon({
+															icon: 'fa-city',
+															markerColor: 'yellow',
+															shape: 'square',
+															prefix: 'fa',
+														});
+
+														var tidiedCity = cityPoints[i].name.replace(/ /g,"_");
+
+														let m = L.marker([cityPoints[i].coordinates.latitude, cityPoints[i].coordinates.longitude], {icon: yellowMarker}).bindPopup(
+															"<h6 align='center'>" + cityPoints[i].name + "</h6>" + cityPoints[i].snippet + "<br/>" 
+															+ "<a href =https://en.wikipedia.org/wiki/" + tidiedCity + " target='_blank'>" + cityPoints[i].name + "</a>"
+															);
+														
+														markerCluster1.addLayer(m);
+													}
+
+													mymap.addLayer(markerCluster1);
+
+												}
+											},
+											error: function(jqXHR, textStatus, errorThrown) {
+												console.log(jqXHR);
+											}
+										});
+
+										$.ajax({
+											url: "php/poiCluster.php",
+											type: 'POST',
+											dataType: "json",
+											data: {"tidiedCountry": tidiedCountry},
+											success: function(result) {
+
+												//console.log(result);  
+
+												if (result.status.name == "ok") {
+
+													var poiPoints = result['data'];
+
+													markerCluster2 = L.markerClusterGroup();
+
+													for (let i = 0; i < poiPoints.length; i++) {
+
+														var purpleMarker = L.ExtraMarkers.icon({
+															icon: 'fa-exclamation',
+															markerColor: 'purple',
+															shape: 'star',
+															prefix: 'fa',
+														});
+
+														var tidiedPoi = poiPoints[i].name.replace(/ /g,"_");
+
+														let m = L.marker([poiPoints[i].coordinates.latitude, poiPoints[i].coordinates.longitude], {icon: purpleMarker}).bindPopup(
+															"<h6 align='center'>" + poiPoints[i].name + "</h6>" + "<br/>" 
+															+ "<a href =https://en.wikipedia.org/wiki/" + tidiedPoi + " target='_blank'>" + poiPoints[i].name + "</a>"
+															);
+
+														markerCluster2.addLayer(m);
+													}
+
+													mymap.addLayer(markerCluster2);
+
+												}
+											},
+											error: function(jqXHR, textStatus, errorThrown) {
+												console.log(jqXHR);
+											}
 										});
 
 

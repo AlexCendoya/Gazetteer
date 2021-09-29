@@ -37,7 +37,7 @@
     @media screen and (max-width: 700px) {
         
         .modal-content {
-            font-size: 13px;
+            font-size: 14px;
         }
 
         .modal-dialog {
@@ -66,11 +66,18 @@
 
     .modal-content .modal-body {
         font-size: 0.9em;
+        padding: 15px;
     }
 
-    .modal-content .modal-body .main-info {
+    .modal-content .modal-body .info-headline {
+        text-align: center;
+    }
+
+    .modal-content .modal-body .info-headline .main-info {
         font-size: 1.5em;
         font-weight: bolder;
+        text-align: center;
+        display: inline-block;
     }
 
     /*zoom control*/
