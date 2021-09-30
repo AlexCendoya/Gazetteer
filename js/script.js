@@ -157,7 +157,7 @@ $(document).ready(function(){
 													+ localTemperature + "°C</td></tr></table>"
 													+ localWeather + ", " + localHumidity + "% humidity <br/>" 
 													+ localTime + "<br/>" 
-													+ "<a href =https://en.wikipedia.org/wiki/" + tidiedLocation + " target='_blank'>" + cityName + "</a>"
+													+ "<a href =https://en.wikipedia.org/wiki/" + tidiedLocation + " target='_blank'>Wikipedia</a>"
 
 												).openPopup();
 
@@ -427,11 +427,12 @@ $(document).ready(function(){
 														var tidiedCity = cityPoints[i].name.replace(/ /g,"_");
 
 														let m = L.marker([cityPoints[i].coordinates.latitude, cityPoints[i].coordinates.longitude], {icon: yellowMarker}).bindPopup(
-															"<h6 align='center'>" + cityPoints[i].name + "</h6>" + cityPoints[i].snippet + "<br/>" 
-															+ "<a href =https://en.wikipedia.org/wiki/" + tidiedCity + " target='_blank'>" + cityPoints[i].name + "</a>"
+															"<h6 align='center'>" + cityPoints[i].name + "</h6><br/><img src='" + result['data'][i]['images'][0].sizes.medium.url + "' class='cityImage'><br/>" + cityPoints[i].snippet + "<br/>" 
+															+ "<a href =https://en.wikipedia.org/wiki/" + tidiedCity + " target='_blank'>Wikipedia</a>"
 															);
 														
 														markerCluster1.addLayer(m);
+
 													}
 
 													mymap.addLayer(markerCluster1);
@@ -470,8 +471,8 @@ $(document).ready(function(){
 														var tidiedPoi = poiPoints[i].name.replace(/ /g,"_");
 
 														let m = L.marker([poiPoints[i].coordinates.latitude, poiPoints[i].coordinates.longitude], {icon: purpleMarker}).bindPopup(
-															"<h6 align='center'>" + poiPoints[i].name + "</h6>" + "<br/>" 
-															+ "<a href =https://en.wikipedia.org/wiki/" + tidiedPoi + " target='_blank'>" + poiPoints[i].name + "</a>"
+															"<h6 align='center'>" + poiPoints[i].name + "</h6><br/><img src='" + result['data'][i]['images'][0].sizes.medium.url + "' class='poiImage'><br/>" 
+															+ "<a href =https://en.wikipedia.org/wiki/" + tidiedPoi + " target='_blank'>Wikipedia</a>"
 															);
 
 														markerCluster2.addLayer(m);

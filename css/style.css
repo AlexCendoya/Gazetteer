@@ -101,6 +101,16 @@
         font-size: 14px;
     }
 
+    /*cluster images*/
+
+    .cityImage {
+        width: 100%;
+    }
+
+    .poiImage {
+        width: 100%;
+    }
+
     /*preloader*/
 
     #preloader {
