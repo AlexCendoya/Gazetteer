@@ -471,7 +471,7 @@ $(document).ready(function(){
 														var tidiedPoi = poiPoints[i].name.replace(/ /g,"_");
 
 														let m = L.marker([poiPoints[i].coordinates.latitude, poiPoints[i].coordinates.longitude], {icon: purpleMarker}).bindPopup(
-															"<h6 align='center'>" + poiPoints[i].name + "</h6><br/><img src='" + result['data'][i]['images'][0].sizes.medium.url + "' class='poiImage'><br/>" 
+															"<h6 align='center'>" + poiPoints[i].name + "</h6><br/><img src='" + result['data'][i]['images'][0].sizes.medium.url + "' class='poiImage'><br/>" + poiPoints[i].snippet + "<br/>"
 															+ "<a href =https://en.wikipedia.org/wiki/" + tidiedPoi + " target='_blank'>Wikipedia</a>"
 															);
 

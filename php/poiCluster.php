@@ -5,7 +5,7 @@
 
     $executionStartTime = microtime(true);
 
-    $url='https://www.triposo.com/api/20210615/poi.json?location_id=' . $_REQUEST['tidiedCountry'] . '&count=10&order_by=-score&fields=name,best_for,coordinates,images,score,id&account=Z1SBIW0E&token=w07hdb8uk0w75rhs4drefdvijxpbtwg0';
+    $url='https://www.triposo.com/api/20210615/poi.json?location_id=' . $_REQUEST['tidiedCountry'] . '&count=10&order_by=-score&fields=name,best_for,coordinates,images,score,snippet,id&account=Z1SBIW0E&token=w07hdb8uk0w75rhs4drefdvijxpbtwg0';
 
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
