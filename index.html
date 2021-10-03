@@ -44,8 +44,6 @@
 
             <div class="container-fluid">
 
-                <a class="navbar-brand">Gazetteer</a>
-
                 <div id="dropDown" class="d-flex" >
 
                     <select id="selectCountry" class="selectCountry" name="selectCountry" placeholder="Select country" aria-label="Select country">
@@ -60,7 +58,7 @@
         </nav>
 
                 
-        <!-- Modal -->
+        <!-- First modal: country info -->
 
 
         <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -74,7 +72,7 @@
                         <table class="modal-title">
 
                             <tr>
-                                <td id="countryFlag">
+                                <td class="countryFlag">
                                 
                                 </td>
                                 <br>
@@ -112,33 +110,8 @@
                             </table>
                         </div>
 
-                        <table>
-
-                            <tr>
-
-                                <td>
-                                    <b>Weather:</b>
-                                </td>
-                                <td id="countryWeather">
-
-                                </td>
-
-                            </tr>
-
-                            <tr>
-
-                                <td>
-                                    <b>Humidity:</b>
-                                </td>
-                                <td id="countryHumidity">
-
-                                </td>
-
-                            </tr>
-
-                        </table>
                         
-                        <table>
+                        <table class="table table-striped">
                             <hr/>
 
                             <tr>
@@ -208,6 +181,140 @@
                 </div>
             </div>
         </div>
+
+
+        <!-- Second modal: covid info -->
+
+
+        <div class="modal fade" id="myModal2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            
+            <div class="modal-dialog">
+                
+                <div class="modal-content">
+
+                    <div class="modal-header2">
+
+                        <table class="modal-title">
+
+                            <tr>
+                                <td class="countryFlag">
+                                
+                                </td>
+                                <br>
+                                <td class="countryName" id="countryName">
+                                    
+                                </td>
+    
+                            </tr>
+    
+                        </table>
+
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                    </div>
+
+                    <div class="modal-body">
+
+                        <table class="table table-striped">
+
+                            <!--
+                            <thead>
+                              <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">First</th>
+                                <th scope="col">Last</th>
+                                <th scope="col">Handle</th>
+                              </tr>
+                            </thead>
+                                -->
+                            <tbody>
+                              <tr>
+                                <th scope="row">1</th>
+                                <td>Mark</td>
+                                <td>Otto</td>
+                                <td>@mdo</td>
+                              </tr>
+                              <tr>
+                                <th scope="row">2</th>
+                                <td>Jacob</td>
+                                <td>Thornton</td>
+                                <td>@fat</td>
+                              </tr>
+                              <tr>
+                                <th scope="row">3</th>
+                                <td>Larry</td>
+                                <td>the Bird</td>
+                                <td>@twitter</td>
+                              </tr>
+                            </tbody>
+
+                          </table>
+
+                        
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Third modal: weather info -->
+
+
+        <div class="modal fade" id="myModal3" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            
+            <div class="modal-dialog">
+                
+                <div class="modal-content">
+
+                    <div class="modal-header3">
+
+                        <table class="modal-title">
+
+                            <tr>
+                                <td class="countryFlag">
+                                
+                                </td>
+                                <br>
+                                <td class="countryName" id="countryName">
+                                    
+                                </td>
+    
+                            </tr>
+    
+                        </table>
+
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                    </div>
+
+                    <div class="modal-body">
+                        
+                        <div class="info-headline">
+                            <table class="main-info">
+
+                                <tr>
+
+                                    <td id="countryTime">
+
+                                    </td>
+                                    <td>
+                                        <div id="countryWeatherIcon"></div>
+                                    </td>
+                                    <td id="countryTemperature">
+
+                                    </td>
+
+                                </tr>
+
+                            </table>
+                        </div>
+                       
+                    </div>
+
+                </div>
+            </div>
+        </div>
     
         <!--Map-->
 
@@ -224,7 +331,7 @@
 
         <script src="packages/markerCluster/leaflet.markercluster-src.js"></script>
         <script src="packages/extraMarkers/dist/js/leaflet.extra-markers.min.js"></script>
-
+        <script src="packages/Datejs-master/build/date-en-GB.js"></script>
         <script src="js/script.js"></script>
 
 

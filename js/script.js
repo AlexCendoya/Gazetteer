@@ -1,7 +1,7 @@
 
 $(document).ready(function(){
 
-    //map and geolocation
+    //maps 
 
     var mymap = L.map('mapid');	
 	
@@ -9,10 +9,67 @@ $(document).ready(function(){
 		attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
 	}).addTo(mymap);
 
-	var infoButton = L.easyButton('<i class="fas fa-globe-europe fa-lg"></i>', function(btn, mymap) {
+	var NASAGIBS_ViirsEarthAtNight2012 = L.tileLayer('https://map1.vis.earthdata.nasa.gov/wmts-webmerc/VIIRS_CityLights_2012/default/{time}/{tilematrixset}{maxZoom}/{z}/{y}/{x}.{format}', {
+		attribution: 'Imagery provided by services from the Global Imagery Browse Services (GIBS), operated by the NASA/GSFC/Earth Science Data and Information System (<a href="https://earthdata.nasa.gov">ESDIS</a>) with funding provided by NASA/HQ.',
+		bounds: [[-85.0511287776, -179.999999975], [85.0511287776, 179.999999975]],
+		minZoom: 1,
+		maxZoom: 8,
+		format: 'jpg',
+		time: '',
+		tilematrixset: 'GoogleMapsCompatible_Level'
+	});
+
+	var OpenTopoMap = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+		maxZoom: 17,
+		attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
+	});
+	
+	var OpenStreetMap_Mapnik = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+		maxZoom: 19,
+		attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+	});
+
+	
+	var marker, markerCluster1, markerCluster2, markerCluster3, markerCluster4, markerCluster5
+
+	//Layer control
+	console.log(marker);
+	console.log(markerCluster1);
+	console.log(markerCluster2);
+	
+	var baseLayers = {
+		"Satellite": Esri_WorldImagery,
+		"Nocturnal satellite": NASAGIBS_ViirsEarthAtNight2012,
+		"Geophysical": OpenTopoMap,
+		"Streets": OpenStreetMap_Mapnik
+	};
+
+	/*
+
+	var overLays = {
+		"Your location": marker
+		"Cities": markerCluster1,
+		"Points of interest": markerCluster2
+	};
+			*/
+
+	//overLays to be included
+	L.control.layers(baseLayers, null).addTo(mymap);
+
+	//Info Buttons
+
+	var countryButton = L.easyButton('<i class="fas fa-info fa-lg"></i>', function(btn, mymap) {
 		$('#myModal').modal('show');
 	}, {position: 'bottomright'}).addTo(mymap);
+	
+	var covidButton = L.easyButton('<i class="fas fa-viruses fa-lg"></i>', function(btn, mymap) {
+		$('#myModal2').modal('show');
+	}, {position: 'bottomright'}).addTo(mymap);
 
+	var weatherButton = L.easyButton('<i class="fas fa-cloud-sun fa-lg"></i>', function(btn, mymap) {
+		$('#myModal3').modal('show');
+	}, {position: 'bottomright'}).addTo(mymap);
+	
 	//Preloader
 
     mymap.on('load', onMapLoad);
@@ -67,10 +124,11 @@ $(document).ready(function(){
 			}
 
 		});
-		
+
+
 		// latitude&longitude values
 
-		var isoCode, lat, lng, border, markerCluster1, markerCluster2
+		var isoCode, lat, lng, border
 		
 		var inMyCountry = true;		
 		
@@ -84,7 +142,7 @@ $(document).ready(function(){
 
 			//geolocation out of lat/lng: get ISO code out API and use it highlight location
 
-			var marker, localTime, localTemperature, localWeather, localHumidity, localWeatherIcon
+			var localTime, localTemperature, localWeather, localHumidity, localWeatherIcon
 
 			$.ajax({
 				url: "php/countryCode.php",
@@ -157,7 +215,7 @@ $(document).ready(function(){
 													+ localTemperature + "°C</td></tr></table>"
 													+ localWeather + ", " + localHumidity + "% humidity <br/>" 
 													+ localTime + "<br/>" 
-													+ "<a href =https://en.wikipedia.org/wiki/" + tidiedLocation + " target='_blank'>Wikipedia</a>"
+													+ "<a href =https://en.wikipedia.org/wiki/" + tidiedLocation + " target='_blank'><i class='fab fa-wikipedia-w fa-lg'></i></a>"
 
 												).openPopup();
 
@@ -197,8 +255,8 @@ $(document).ready(function(){
 
 								if (result.status.name == "ok") {
 
-									localTime = result['data'];
-
+									localTime = Date.parse(result['data']);
+									 
 								}
 
 							},
@@ -219,14 +277,16 @@ $(document).ready(function(){
 			});
 
 
-
 		}  
+
+
+
 
 		// Borders
 
 		$('#selectCountry').change( function() {
 			
-			if( inMyCountry )
+			if(inMyCountry)
 			{
 			
 				$("#selectCountry").val(isoCode);
@@ -273,6 +333,18 @@ $(document).ready(function(){
 								mymap.removeLayer(markerCluster2);
 							}
 
+							if (mymap.hasLayer(markerCluster3)) {
+								mymap.removeLayer(markerCluster3);
+							}
+
+							if (mymap.hasLayer(markerCluster4)) {
+								mymap.removeLayer(markerCluster4);
+							}
+
+							if (mymap.hasLayer(markerCluster5)) {
+								mymap.removeLayer(markerCluster5);
+							}
+
 							var borderLines = result["data"];
 
 							var borderStyle = {
@@ -286,14 +358,10 @@ $(document).ready(function(){
 							}).addTo(mymap); 
 							
 							mymap.fitBounds(border.getBounds());
-							
-							// modal show
-
-							$("#myModal").modal('show');
 
 							// modal content
 
-							$('#countryFlag').html("<img src='https://www.countryflags.io/" + isoCode + "/flat/64.png' />");
+							$('.countryFlag').append("<img src='https://www.countryflags.io/" + isoCode + "/flat/64.png' />");
 
                             $.ajax({
 								url: "php/restCountries.php",
@@ -305,8 +373,8 @@ $(document).ready(function(){
                                     //console.log(result);
 
                                     if (result.status.name == "ok") {
-
-                                        $('#population').html(result['data1']);
+										
+                                        $('#population').html(result['data1'].toLocaleString("en"));
 										$('#currency').html(result['data2'][0]['name'] + " (" + result['data2'][0]['symbol'] + ")");
 										$('#language').html(result['data3'][0]['name']);
 										$('#callingCode').html("+" + result['data4']);
@@ -335,7 +403,7 @@ $(document).ready(function(){
 										var capitalCity = result.data2;
 										var tidiedCountry = countryName.replace(/ /g,"_");
 
-										$('#countryName').html(result.data1.official);
+										$('.countryName').append(result.data1.official);
 										$('#capitalCity').html(capitalCity);
 										$('#countryWikipedia').html("<a href =https://en.wikipedia.org/wiki/" + tidiedCountry + " target='_blank'>" + countryName + "</a>");
 
@@ -379,8 +447,8 @@ $(document).ready(function(){
 
 															if (result.status.name == "ok") {
 
-																$('#countryTime').html(result['data']);
-
+																$('#countryTime').html(Date.parse(result['data']));
+																 
 															}
 														},
 														error: function(jqXHR, textStatus, errorThrown) {
@@ -417,18 +485,18 @@ $(document).ready(function(){
 
 													for (let i = 0; i < cityPoints.length; i++) {
 
-														var yellowMarker = L.ExtraMarkers.icon({
+														var blackMarker = L.ExtraMarkers.icon({
 															icon: 'fa-city',
-															markerColor: 'yellow',
+															markerColor: 'blue-dark',
 															shape: 'square',
 															prefix: 'fa',
 														});
 
 														var tidiedCity = cityPoints[i].name.replace(/ /g,"_");
 
-														let m = L.marker([cityPoints[i].coordinates.latitude, cityPoints[i].coordinates.longitude], {icon: yellowMarker}).bindPopup(
+														let m = L.marker([cityPoints[i].coordinates.latitude, cityPoints[i].coordinates.longitude], {icon: blackMarker}).bindPopup(
 															"<h6 align='center'>" + cityPoints[i].name + "</h6><br/><img src='" + result['data'][i]['images'][0].sizes.medium.url + "' class='cityImage'><br/>" + cityPoints[i].snippet + "<br/>" 
-															+ "<a href =https://en.wikipedia.org/wiki/" + tidiedCity + " target='_blank'>Wikipedia</a>"
+															+ "<a href =https://en.wikipedia.org/wiki/" + tidiedCity + " target='_blank'><i class='fab fa-wikipedia-w fa-lg'></a>"
 															);
 														
 														markerCluster1.addLayer(m);
@@ -444,6 +512,7 @@ $(document).ready(function(){
 											}
 										});
 
+										/*
 										$.ajax({
 											url: "php/poiCluster.php",
 											type: 'POST',
@@ -451,7 +520,7 @@ $(document).ready(function(){
 											data: {"tidiedCountry": tidiedCountry},
 											success: function(result) {
 
-												//console.log(result);  
+												console.log(result);  
 
 												if (result.status.name == "ok") {
 
@@ -472,7 +541,7 @@ $(document).ready(function(){
 
 														let m = L.marker([poiPoints[i].coordinates.latitude, poiPoints[i].coordinates.longitude], {icon: purpleMarker}).bindPopup(
 															"<h6 align='center'>" + poiPoints[i].name + "</h6><br/><img src='" + result['data'][i]['images'][0].sizes.medium.url + "' class='poiImage'><br/>" + poiPoints[i].snippet + "<br/>"
-															+ "<a href =https://en.wikipedia.org/wiki/" + tidiedPoi + " target='_blank'>Wikipedia</a>"
+															+ "<a href =https://en.wikipedia.org/wiki/" + tidiedPoi + " target='_blank'><i class='fab fa-wikipedia-w fa-lg'></a>"
 															);
 
 														markerCluster2.addLayer(m);
@@ -487,6 +556,134 @@ $(document).ready(function(){
 											}
 										});
 
+										*/
+										$.ajax({
+											url: "php/hikingCluster.php",
+											type: 'POST',
+											dataType: "json",
+											data: {"tidiedCountry": tidiedCountry},
+											success: function(result) {
+
+												//console.log(result);  
+
+												if (result.status.name == "ok") {
+
+													var hikingPoints = result['data'];
+
+													markerCluster3 = L.markerClusterGroup();
+
+													for (let i = 0; i < hikingPoints.length; i++) {
+
+														var greenMarker = L.ExtraMarkers.icon({
+															icon: 'fa-hiking',
+															markerColor: 'green-dark',
+															prefix: 'fa',
+														});
+
+														var tidiedHiking = hikingPoints[i].name.replace(/ /g,"_");
+
+														let m = L.marker([hikingPoints[i].coordinates.latitude, hikingPoints[i].coordinates.longitude], {icon: greenMarker}).bindPopup(
+															"<h6 align='center'>" + hikingPoints[i].name + "</h6><br/><img src='" + result['data'][i]['images'][0].sizes.medium.url + "' class='hikingImage'><br/>" + hikingPoints[i].snippet + "<br/>"
+															+ "<a href =https://en.wikipedia.org/wiki/" + tidiedHiking + " target='_blank'><i class='fab fa-wikipedia-w fa-lg'></a>"
+															);
+
+														markerCluster3.addLayer(m);
+													}
+
+													mymap.addLayer(markerCluster3);
+
+												}
+											},
+											error: function(jqXHR, textStatus, errorThrown) {
+												console.log(jqXHR);
+											}
+										});
+
+
+										$.ajax({
+											url: "php/cuisineCluster.php",
+											type: 'POST',
+											dataType: "json",
+											data: {"tidiedCountry": tidiedCountry},
+											success: function(result) {
+
+												console.log(result);  
+
+												if (result.status.name == "ok") {
+
+													var cuisinePoints = result['data'];
+
+													markerCluster4 = L.markerClusterGroup();
+
+													for (let i = 0; i < cuisinePoints.length; i++) {
+
+														var pinkMarker = L.ExtraMarkers.icon({
+															icon: 'fa-utensils',
+															markerColor: 'pink',
+															shape: 'penta',
+															prefix: 'fa',
+														});
+
+														var tidiedCuisine = cuisinePoints[i].name.replace(/ /g,"_");
+
+														let m = L.marker([cuisinePoints[i].coordinates.latitude, cuisinePoints[i].coordinates.longitude], {icon: pinkMarker}).bindPopup(
+															"<h6 align='center'>" + cuisinePoints[i].name + "</h6><br/><img src='" + result['data'][i]['images'][0].sizes.medium.url + "' class='cuisineImage'><br/>" + cuisinePoints[i].snippet + "<br/>"
+															+ "<a href =https://en.wikipedia.org/wiki/" + tidiedCuisine + " target='_blank'><i class='fab fa-wikipedia-w fa-lg'></a>"
+															);
+
+														markerCluster4.addLayer(m);
+													}
+
+													mymap.addLayer(markerCluster4);
+
+												}
+											},
+											error: function(jqXHR, textStatus, errorThrown) {
+												console.log(jqXHR);
+											}
+										});
+
+										$.ajax({
+											url: "php/sightCluster.php",
+											type: 'POST',
+											dataType: "json",
+											data: {"tidiedCountry": tidiedCountry},
+											success: function(result) {
+
+												//console.log(result);  
+
+												if (result.status.name == "ok") {
+
+													var sightPoints = result['data'];
+
+													markerCluster5 = L.markerClusterGroup();
+
+													for (let i = 0; i < sightPoints.length; i++) {
+
+														var yellowMarker = L.ExtraMarkers.icon({
+															icon: 'fa-eye',
+															markerColor: 'yellow',
+															prefix: 'fa',
+														});
+
+														var tidiedSight = sightPoints[i].name.replace(/ /g,"_");
+
+														let m = L.marker([sightPoints[i].coordinates.latitude, sightPoints[i].coordinates.longitude], {icon: yellowMarker}).bindPopup(
+															"<h6 align='center'>" + sightPoints[i].name + "</h6><br/><img src='" + result['data'][i]['images'][0].sizes.medium.url + "' class='sightImage'><br/>" + sightPoints[i].snippet + "<br/>"
+															+ "<a href =https://en.wikipedia.org/wiki/" + tidiedSight + " target='_blank'><i class='fab fa-wikipedia-w fa-lg'></a>"
+															);
+
+														markerCluster5.addLayer(m);
+													}
+
+													mymap.addLayer(markerCluster5);
+
+												}
+											},
+											error: function(jqXHR, textStatus, errorThrown) {
+												console.log(jqXHR);
+											}
+										});
 
 									}
 
