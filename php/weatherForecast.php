@@ -5,8 +5,8 @@
 
     $executionStartTime = microtime(true);
 
-    $url='https://restcountries.com/v2/alpha/' . $_REQUEST['isoCode'];
-    
+    $url='https://api.openweathermap.org/data/2.5/forecast?lat=' . $_REQUEST['lat'] . '&lon=' . $_REQUEST['lng'] . '&units=metric&appid=85d38f64c17227dd8dccf75af3501327';
+
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -14,20 +14,13 @@
 
     $result=curl_exec($ch);
 
-
     $decode = json_decode($result,true);	
 
     $output['status']['code'] = "200";
     $output['status']['name'] = "ok";
     $output['status']['description'] = "success";
     $output['status']['returnedIn'] = intval((microtime(true) - $executionStartTime) * 1000) . " ms";
-    $output['data1'] = $decode['topLevelDomain'];
-    $output['data2'] = $decode['callingCodes'];
-    $output['data3'] = $decode['population'];
-    $output['data4'] = $decode['area'];
-    $output['data5'] = $decode['gini'];
-    $output['data6'] = $decode['currencies'];
-    $output['data7'] = $decode['languages'];
+    $output['data'] = $decode['list'];
 
     header('Content-Type: application/json; charset=UTF-8');
 

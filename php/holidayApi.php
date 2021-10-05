@@ -5,8 +5,9 @@
 
     $executionStartTime = microtime(true);
 
-    $url='https://www.triposo.com/api/20210615/poi.json?tag_labels=history&location_id=' . $_REQUEST['tidiedCountry'] . '&count=10&order_by=-score&fields=name,best_for,coordinates,images,snippet,score,id&account=Z1SBIW0E&token=w07hdb8uk0w75rhs4drefdvijxpbtwg0';
+    $url='https://holidays.abstractapi.com/v1/?api_key=4276cc3a91224b4e884499b930afc8e0&country=' . $_REQUEST['isoCode'] . '&year=' . $_REQUEST['year'] . '&month=' . $_REQUEST['month'] . '&day=' . $_REQUEST['day'];
 
+    
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -21,8 +22,8 @@
     $output['status']['name'] = "ok";
     $output['status']['description'] = "success";
     $output['status']['returnedIn'] = intval((microtime(true) - $executionStartTime) * 1000) . " ms";
-    $output['data'] = $decode['results'];
-
+    $output['data1'] = $decode[0]['name'];
+    $output['data2'] = $decode[0]['type'];
 
     header('Content-Type: application/json; charset=UTF-8');
 

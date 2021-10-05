@@ -116,7 +116,7 @@
 
                             <tr>
                                 <td>
-                                    <b>Country Wikia:</b>
+                                    <b>In Wikipedia</b>
                                 </td>
                                 <td id="countryWikipedia">
     
@@ -126,7 +126,7 @@
 
                             <tr>
                                 <td>
-                                    <b>Capital city:</b>
+                                    <b>Capital city</b>
                                 </td>
                                 <td id="capitalCity">
     
@@ -136,7 +136,7 @@
 
                             <tr>
                                 <td>
-                                    <b>Population:</b> 
+                                    <b>Population</b> 
                                 </td>
                                 <td id="population">
     
@@ -146,7 +146,7 @@
    
                             <tr>
                                 <td>
-                                    <b>Currency:</b> 
+                                    <b>Currency</b> 
                                 </td>
                                 <td id="currency">
     
@@ -156,22 +156,62 @@
     
                             <tr>
                                 <td>
-                                    <b>Language:</b>
+                                    <b>Language</b>
                                 </td>
                                 <td id="language">
     
                                 </td>
     
                             </tr>
+
                             <tr>
                                 <td>
-                                    <b>Calling code:</b>
+                                    <b>Area (in km&sup2)</b>
+                                </td>
+                                <td id="area">
+    
+                                </td>
+    
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <b>Gini coefficient</b>
+                                </td>
+                                <td id="gini">
+    
+                                </td>
+    
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <b>Calling code</b>
                                 </td>
                                 <td id="callingCode">
     
                                 </td>
     
                             </tr>
+                            <tr>
+                                <td>
+                                    <b>Top Level Domain</b>
+                                </td>
+                                <td id="tld">
+    
+                                </td>
+    
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>Are they celebrating anything today?</b>
+                                </td>
+                                <td id="holiday">
+    
+                                </td>
+    
+                            </tr>
+
     
     
                         </table>
@@ -217,38 +257,77 @@
 
                         <table class="table table-striped">
 
-                            <!--
-                            <thead>
-                              <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">First</th>
-                                <th scope="col">Last</th>
-                                <th scope="col">Handle</th>
-                              </tr>
-                            </thead>
-                                -->
-                            <tbody>
-                              <tr>
-                                <th scope="row">1</th>
-                                <td>Mark</td>
-                                <td>Otto</td>
-                                <td>@mdo</td>
-                              </tr>
-                              <tr>
-                                <th scope="row">2</th>
-                                <td>Jacob</td>
-                                <td>Thornton</td>
-                                <td>@fat</td>
-                              </tr>
-                              <tr>
-                                <th scope="row">3</th>
-                                <td>Larry</td>
-                                <td>the Bird</td>
-                                <td>@twitter</td>
-                              </tr>
-                            </tbody>
+                            <tr>
+                                <td>
+                                    <b>Confirmed cases</b>
+                                </td>
+                                <td id="confirmed">
+    
+                                </td>
+    
+                            </tr>
 
-                          </table>
+                            <tr>
+                                <td>
+                                    <b>Deaths</b>
+                                </td>
+                                <td id="deaths">
+    
+                                </td>
+    
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <b>Recovered</b> 
+                                </td>
+                                <td id="recovered">
+    
+                                </td>
+    
+                            </tr>
+   
+                            <tr>
+                                <td>
+                                    <b>Critical cases</b> 
+                                </td>
+                                <td id="critical">
+    
+                                </td>
+    
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <b>Death rate</b> 
+                                </td>
+                                <td id="deathrate">
+    
+                                </td>
+    
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <b>Recovery rate</b> 
+                                </td>
+                                <td id="recoveryrate">
+    
+                                </td>
+    
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <b>Cases per million</b> 
+                                </td>
+                                <td id="casespermillion">
+    
+                                </td>
+    
+                            </tr>
+
+                        </table>
 
                         
                     </div>
@@ -289,26 +368,34 @@
                     </div>
 
                     <div class="modal-body">
-                        
-                        <div class="info-headline">
-                            <table class="main-info">
 
-                                <tr>
-
-                                    <td id="countryTime">
-
-                                    </td>
-                                    <td>
-                                        <div id="countryWeatherIcon"></div>
-                                    </td>
-                                    <td id="countryTemperature">
-
-                                    </td>
-
-                                </tr>
-
-                            </table>
+                        <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+                        <ol class="carousel-indicators">
+                            <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+                            <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+                            <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+                        </ol>
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                            <img class="d-block w-100" src="..." alt="First slide">
+                            </div>
+                            <div class="carousel-item">
+                            <img class="d-block w-100" src="..." alt="Second slide">
+                            </div>
+                            <div class="carousel-item">
+                            <img class="d-block w-100" src="..." alt="Third slide">
+                            </div>
                         </div>
+                        <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                        <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                        </div>
+
                        
                     </div>
 
