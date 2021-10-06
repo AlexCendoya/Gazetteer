@@ -210,7 +210,7 @@ $(document).ready(function(){
 
 												marker = L.marker(coords).addTo(mymap).bindPopup(
 
-													"<div class='popuptitle'><h5 align='center'>You are here!</h5><h6>" + suburb + " (" + cityName + ")</h6></div><hr/><table><tr><td>"
+													"<div class='popuptitle'><h5 align='center'>You are here!</h5><h6>" + suburb + " (" + cityName + ")</h6></div><hr/><table class='popupbody'><tr><td>"
 													+ localTime +"</td><td><img src="
 													+ localWeatherIcon + " ></td><td>"
 													+ localTemperature + "°C</td></tr></table><div class='popupbottom'>"
@@ -254,7 +254,7 @@ $(document).ready(function(){
 
 								if (result.status.name == "ok") {
 
-									localTime = Date.parse(result['data'].replace(" ", "T")).toString('dddd, MMMM dd, yyyy h:mm:ss tt');
+									localTime = Date.parse(result['data'].replace(" ", "T")).toString('ddd, MMMM dd, yyyy h:mm tt');
 
 								}
 
@@ -512,7 +512,7 @@ $(document).ready(function(){
 
 															if (result.status.name == "ok") {
 
-																$('#countryTime').html(Date.parse(result['data'].replace(" ", "T")).toString('dddd, MMMM dd, yyyy h:mm:ss tt'));
+																$('#countryTime').html(Date.parse(result['data'].replace(" ", "T")).toString('dddd, MMMM dd, yyyy h:mm tt'));
 
 																var year = result['data'].slice(0,4);
 																var month = result['data'].slice(5,7);
