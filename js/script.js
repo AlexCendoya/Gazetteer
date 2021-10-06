@@ -63,8 +63,12 @@ $(document).ready(function(){
 		$('#myModal2').modal('show');
 	}, {position: 'bottomright'}).addTo(mymap);
 
-	var weatherButton = L.easyButton('<i class="fas fa-newspaper fa-lg"></i>', function(btn, mymap) {
+	var newsButton = L.easyButton('<i class="fas fa-newspaper fa-lg"></i>', function(btn, mymap) {
 		$('#myModal3').modal('show');
+	}, {position: 'bottomright'}).addTo(mymap);
+
+	var picturesButton = L.easyButton('<i class="fas fa-images fa-lg"></i>', function(btn, mymap) {
+		$('#myModal4').modal('show');
 	}, {position: 'bottomright'}).addTo(mymap);
 	
 	//Preloader
@@ -204,14 +208,14 @@ $(document).ready(function(){
 
 												// popup marker
 
-												var marker = L.marker(coords).addTo(mymap).bindPopup(
+												marker = L.marker(coords).addTo(mymap).bindPopup(
 
-													"<h5 align='center'>You are here!</h5><h6>" + suburb + " (" + cityName + ")</h6><hr/><table><tr><td><img src="
+													"<div class='popuptitle'><h5 align='center'>You are here!</h5><h6>" + suburb + " (" + cityName + ")</h6></div><hr/><table><tr><td>"
+													+ localTime +"</td><td><img src="
 													+ localWeatherIcon + " ></td><td>"
-													+ localTemperature + "°C</td></tr></table>"
-													+ localWeather + ", " + localHumidity + "% humidity <br/>" 
-													+ localTime + "<br/>" 
-													+ "<a href =https://en.wikipedia.org/wiki/" + tidiedLocation + " target='_blank'><i class='fab fa-wikipedia-w fa-lg'></i></a>"
+													+ localTemperature + "°C</td></tr></table><div class='popupbottom'"
+													+ localWeather + ", " + localHumidity + "% humidity <br/>"  
+													+ "<a href =https://en.wikipedia.org/wiki/" + tidiedLocation + " target='_blank'><i class='fab fa-wikipedia-w fa-lg'></i></a></div>"
 
 												).openPopup();
 
@@ -262,89 +266,6 @@ $(document).ready(function(){
 
 						});
 						
-						$.ajax({
-							url: "php/weatherForecast.php",
-							type: 'POST',
-							dataType: "json",
-							data: {
-								lat: lat,
-								lng: lng,
-							},   
-							success: function(result) {
-
-								//console.log(result);
-
-								if (result.status.name == "ok") {
-
-									//forecast day 1
-
-									let day1MinTemp = result['data'][8].main.temp_min;
-									let day1MaxTemp = result['data'][8].main.temp_max;
-									let day1Forecast = result['data'][8]['weather'][0]['description'].charAt(0).toUpperCase() + result['data'][8]['weather'][0]['description'].slice(1);
-									let day1WeatherIcon = "https://openweathermap.org/img/wn/" + result['data'][8]['weather'][0]['icon'] + "@2x.png";
-
-									//console.log(day1MinTemp);
-									//console.log(day1MaxTemp);
-									//console.log(day1Forecast);
-									//console.log(day1WeatherIcon);
-
-									//forecast day 2
-
-									let day2MinTemp = result['data'][16].main.temp_min;
-									let day2MaxTemp = result['data'][16].main.temp_max;
-									let day2Forecast = result['data'][16]['weather'][0]['description'].charAt(0).toUpperCase() + result['data'][16]['weather'][0]['description'].slice(1);
-									let day2WeatherIcon = "https://openweathermap.org/img/wn/" + result['data'][16]['weather'][0]['icon'] + "@2x.png";
-
-									//console.log(day2MinTemp);
-									//console.log(day2MaxTemp);
-									//console.log(day2Forecast);
-									//console.log(day2WeatherIcon);
-
-									//forecast day 3
-
-									let day3MinTemp = result['data'][24].main.temp_min;
-									let day3MaxTemp = result['data'][24].main.temp_max;
-									let day3Forecast = result['data'][24]['weather'][0]['description'].charAt(0).toUpperCase() + result['data'][24]['weather'][0]['description'].slice(1);
-									let day3WeatherIcon = "https://openweathermap.org/img/wn/" + result['data'][24]['weather'][0]['icon'] + "@2x.png";
-									
-									//console.log(day3MinTemp);
-									//console.log(day3MaxTemp);
-									//console.log(day3Forecast);
-									//console.log(day3WeatherIcon);
-
-									//forecast day 4
-
-									let day4MinTemp = result['data'][32].main.temp_min;
-									let day4MaxTemp = result['data'][32].main.temp_max;
-									let day4Forecast = result['data'][32]['weather'][0]['description'].charAt(0).toUpperCase() + result['data'][32]['weather'][0]['description'].slice(1);
-									let day4WeatherIcon = "https://openweathermap.org/img/wn/" + result['data'][32]['weather'][0]['icon'] + "@2x.png";
-
-									//console.log(day4MinTemp);
-									//console.log(day4MaxTemp);
-									//console.log(day4Forecast);
-									//console.log(day4WeatherIcon);
-
-									//forecast day 5
-
-									let day5MinTemp = result['data'][39].main.temp_min;
-									let day5MaxTemp = result['data'][39].main.temp_max;
-									let day5Forecast = result['data'][39]['weather'][0]['description'].charAt(0).toUpperCase() + result['data'][39]['weather'][0]['description'].slice(1);
-									let day5WeatherIcon = "https://openweathermap.org/img/wn/" + result['data'][39]['weather'][0]['icon'] + "@2x.png";
-
-									//console.log(day5MinTemp);
-									//console.log(day5MaxTemp);
-									//console.log(day5Forecast);
-									//console.log(day5WeatherIcon);
-									 
-								}
-
-							},
-							error: function(jqXHR, textStatus, errorThrown) {
-								console.log(jqXHR);
-							}
-
-
-						});
 
 					}				
 
@@ -358,6 +279,64 @@ $(document).ready(function(){
 
 		}  
 
+		function getWeatherForecast( lat, lng )
+		{
+			
+			var weatherForecast = new Array();
+			
+			$.ajax({
+				url: "php/weatherForecast.php",
+				type: 'POST',
+				dataType: "json",
+				data: {
+					lat: lat,
+					lng: lng,
+				},   
+				success: function(result) {
+
+					//console.log(result);
+
+					if (result.status.name == "ok") {
+						
+						
+						var lastEntry = 0;
+						
+						for( var i = 1; i < 6; i++ )
+						{
+														
+							if(i == 5)
+							{
+								lastEntry = 1;
+							}
+							
+							var day = []
+							
+							var getDayPosition = ( i * 8 ) - lastEntry;
+							
+							day["day"] = i;
+							day["temp_min"] = result['data'][getDayPosition].main.temp_min;
+							day["temp_max"] = result['data'][getDayPosition].main.temp_max;
+							day["description"] = result['data'][getDayPosition]['weather'][0]['description'].charAt(0).toUpperCase() + result['data'][getDayPosition]['weather'][0]['description'].slice(1);
+							day["icon"] = "https://openweathermap.org/img/wn/" + result['data'][getDayPosition]['weather'][0]['icon'] + "@2x.png";
+										
+							weatherForecast[i-1] = day;
+							
+						}
+								
+					}
+
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					console.log(jqXHR);
+				}
+
+			});
+			
+			//var data = { "weatherForecast" : weatherForecast }; 
+			
+			return weatherForecast;
+			
+		}
 
 
 
@@ -404,6 +383,12 @@ $(document).ready(function(){
 								mymap.removeLayer(border);								
 							}
 							
+							if (mymap.hasLayer(overLays)) {
+								mymap.removeLayer(overLays);
+							}
+
+							//console.log(overLays);
+
 							if (mymap.hasLayer(markerCluster1)) {
 								mymap.removeLayer(markerCluster1);
 							}
@@ -419,7 +404,7 @@ $(document).ready(function(){
 							if (mymap.hasLayer(markerCluster4)) {
 								mymap.removeLayer(markerCluster4);
 							}
-
+	
 
 							var borderLines = result["data"];
 
@@ -597,6 +582,8 @@ $(document).ready(function(){
 
 													var cityPoints = result['data'];
 
+													//markerCluster1 = L.markerClusterGroup();
+
 													for (let i = 0; i < cityPoints.length; i++) {
 
 														var blackMarker = L.ExtraMarkers.icon({
@@ -610,104 +597,38 @@ $(document).ready(function(){
 
 														let lat = cityPoints[i].coordinates.latitude;
 														let lng = cityPoints[i].coordinates.longitude;
+														
+														let weatherForecast = [];
+														
+														weatherForecast[tidiedCity] = getWeatherForecast( lat, lng );
+														
+														//console.log( weatherForecast );
+														
+														//console.log( weatherForecast[tidiedCity][0] );
+														
+														//array1.forEach(element => console.log(element));
+														
+														//console.log(  weatherForecast["city"][0] );
+														
+														for( var w = 0; w < weatherForecast.length; w++)
+														{
+															
+															//console.log( );
 
-														let day1MinTemp, day1MaxTemp, day1Forecast, day1WeatherIcon, day2MinTemp, day2MaxTemp, day2Forecast, day2WeatherIcon,
-														day3MinTemp, day3MaxTemp, day3Forecast, day3WeatherIcon, day4MinTemp, day4MaxTemp, day4Forecast, day4WeatherIcon,
-														day5MinTemp, day5MaxTemp, day5Forecast, day5WeatherIcon
-
-														$.ajax({
-															url: "php/weatherForecast.php",
-															type: 'POST',
-															dataType: "json",
-															data: {
-																lat: lat,
-																lng: lng,
-															},   
-															success: function(result) {
-								
-																//console.log(result);
-								
-																if (result.status.name == "ok") {
-								
-																	//forecast day 1 for cities
-								
-																	day1MinTemp = result['data'][8].main.temp_min;
-																	day1MaxTemp = result['data'][8].main.temp_max;
-																	day1Forecast = result['data'][8]['weather'][0]['description'].charAt(0).toUpperCase() + result['data'][8]['weather'][0]['description'].slice(1);
-																	day1WeatherIcon = "https://openweathermap.org/img/wn/" + result['data'][8]['weather'][0]['icon'] + "@2x.png";
-								
-																	//console.log(day1MinTemp);
-																	//console.log(day1MaxTemp);
-																	//console.log(day1Forecast);
-																	//console.log(day1WeatherIcon);
-								
-																	//forecast day 2 for cities
-								
-																	day2MinTemp = result['data'][16].main.temp_min;
-																	day2MaxTemp = result['data'][16].main.temp_max;
-																	day2Forecast = result['data'][16]['weather'][0]['description'].charAt(0).toUpperCase() + result['data'][16]['weather'][0]['description'].slice(1);
-																	day2WeatherIcon = "https://openweathermap.org/img/wn/" + result['data'][16]['weather'][0]['icon'] + "@2x.png";
-								
-																	//console.log(day2MinTemp);
-																	//console.log(day2MaxTemp);
-																	//console.log(day2Forecast);
-																	//console.log(day2WeatherIcon);
-								
-																	//forecast day 3 for cities
-								
-																	day3MinTemp = result['data'][24].main.temp_min;
-																	day3MaxTemp = result['data'][24].main.temp_max;
-																	day3Forecast = result['data'][24]['weather'][0]['description'].charAt(0).toUpperCase() + result['data'][24]['weather'][0]['description'].slice(1);
-																	day3WeatherIcon = "https://openweathermap.org/img/wn/" + result['data'][24]['weather'][0]['icon'] + "@2x.png";
-																	
-																	//console.log(day3MinTemp);
-																	//console.log(day3MaxTemp);
-																	//console.log(day3Forecast);
-																	//console.log(day3WeatherIcon);
-								
-																	//forecast day 4 for cities
-								
-																	day4MinTemp = result['data'][32].main.temp_min;
-																	day4MaxTemp = result['data'][32].main.temp_max;
-																	day4Forecast = result['data'][32]['weather'][0]['description'].charAt(0).toUpperCase() + result['data'][32]['weather'][0]['description'].slice(1);
-																	day4WeatherIcon = "https://openweathermap.org/img/wn/" + result['data'][32]['weather'][0]['icon'] + "@2x.png";
-								
-																	//console.log(day4MinTemp);
-																	//console.log(day4MaxTemp);
-																	//console.log(day4Forecast);
-																	//console.log(day4WeatherIcon);
-								
-																	//forecast day 5 for cities
-								
-																	day5MinTemp = result['data'][39].main.temp_min;
-																	day5MaxTemp = result['data'][39].main.temp_max;
-																	day5Forecast = result['data'][39]['weather'][0]['description'].charAt(0).toUpperCase() + result['data'][39]['weather'][0]['description'].slice(1);
-																	day5WeatherIcon = "https://openweathermap.org/img/wn/" + result['data'][39]['weather'][0]['icon'] + "@2x.png";
-								
-																	//console.log(day5MinTemp);
-																	//console.log(day5MaxTemp);
-																	//console.log(day5Forecast);
-																	//console.log(day5WeatherIcon);
-																	 
-																}
-								
-															},
-															error: function(jqXHR, textStatus, errorThrown) {
-																console.log(jqXHR);
-															}
-								
-								
-														});
-
+														}											
+														
+														
 														let m = L.marker([lat, lng], {icon: blackMarker}).bindPopup(
 															"<h6 align='center'>" + cityPoints[i].name + "</h6><br/><img src='" + result['data'][i]['images'][0].sizes.medium.url + "' class='cityImage'><br/>" + cityPoints[i].snippet + "<br/>" 
-															+ "<a href =https://en.wikipedia.org/wiki/" + tidiedCity + " target='_blank'><i class='fab fa-wikipedia-w fa-lg'></a><table><tr><td>"
-															+ day1WeatherIcon + day1Forecast + "</td><td>"
-															+ day2WeatherIcon + day2Forecast + "</td><td>"
-															+ day3WeatherIcon + day3Forecast + "</td><td>"
-															+ day4WeatherIcon + day4Forecast + "</td><td>"
-															+ day5WeatherIcon + day5Forecast + "</td></tr></table>"
-															);
+															+ "<a href =https://en.wikipedia.org/wiki/" + tidiedCity + " target='_blank'><i class='fab fa-wikipedia-w fa-lg'></a>"
+															
+															+ "<table><tr><td>" +
+															
+															//+ weatherForeCastOutput + 
+															
+															+ "</td></tr></table>"
+															
+														);
 														
 														markerCluster1.addLayer(m);
 
@@ -736,6 +657,8 @@ $(document).ready(function(){
 
 													var hikingPoints = result['data'];
 
+													//markerCluster2 = L.markerClusterGroup();
+
 													for (let i = 0; i < hikingPoints.length; i++) {
 
 														var greenMarker = L.ExtraMarkers.icon({
@@ -749,105 +672,19 @@ $(document).ready(function(){
 														let lat = hikingPoints[i].coordinates.latitude;
 														let lng = hikingPoints[i].coordinates.longitude;
 
-														let day1MinTemp, day1MaxTemp, day1Forecast, day1WeatherIcon, day2MinTemp, day2MaxTemp, day2Forecast, day2WeatherIcon,
-														day3MinTemp, day3MaxTemp, day3Forecast, day3WeatherIcon, day4MinTemp, day4MaxTemp, day4Forecast, day4WeatherIcon,
-														day5MinTemp, day5MaxTemp, day5Forecast, day5WeatherIcon
-
-														$.ajax({
-															url: "php/weatherForecast.php",
-															type: 'POST',
-															dataType: "json",
-															data: {
-																lat: lat,
-																lng: lng,
-															},   
-															success: function(result) {
-								
-																//console.log(result);
-								
-																if (result.status.name == "ok") {
-								
-																	//forecast day 1 for hiking
-								
-																	day1MinTemp = result['data'][8].main.temp_min;
-																	day1MaxTemp = result['data'][8].main.temp_max;
-																	day1Forecast = result['data'][8]['weather'][0]['description'].charAt(0).toUpperCase() + result['data'][8]['weather'][0]['description'].slice(1);
-																	day1WeatherIcon = "https://openweathermap.org/img/wn/" + result['data'][8]['weather'][0]['icon'] + "@2x.png";
-								
-																	//console.log(day1MinTemp);
-																	//console.log(day1MaxTemp);
-																	//console.log(day1Forecast);
-																	//console.log(day1WeatherIcon);
-								
-																	//forecast day 2 for hiking
-								
-																	day2MinTemp = result['data'][16].main.temp_min;
-																	day2MaxTemp = result['data'][16].main.temp_max;
-																	day2Forecast = result['data'][16]['weather'][0]['description'].charAt(0).toUpperCase() + result['data'][16]['weather'][0]['description'].slice(1);
-																	day2WeatherIcon = "https://openweathermap.org/img/wn/" + result['data'][16]['weather'][0]['icon'] + "@2x.png";
-								
-																	//console.log(day2MinTemp);
-																	//console.log(day2MaxTemp);
-																	//console.log(day2Forecast);
-																	//console.log(day2WeatherIcon);
-								
-																	//forecast day 3 for hiking
-								
-																	day3MinTemp = result['data'][24].main.temp_min;
-																	day3MaxTemp = result['data'][24].main.temp_max;
-																	day3Forecast = result['data'][24]['weather'][0]['description'].charAt(0).toUpperCase() + result['data'][24]['weather'][0]['description'].slice(1);
-																	day3WeatherIcon = "https://openweathermap.org/img/wn/" + result['data'][24]['weather'][0]['icon'] + "@2x.png";
-																	
-																	//console.log(day3MinTemp);
-																	//console.log(day3MaxTemp);
-																	//console.log(day3Forecast);
-																	//console.log(day3WeatherIcon);
-								
-																	//forecast day 4 for hiking
-								
-																	day4MinTemp = result['data'][32].main.temp_min;
-																	day4MaxTemp = result['data'][32].main.temp_max;
-																	day4Forecast = result['data'][32]['weather'][0]['description'].charAt(0).toUpperCase() + result['data'][32]['weather'][0]['description'].slice(1);
-																	day4WeatherIcon = "https://openweathermap.org/img/wn/" + result['data'][32]['weather'][0]['icon'] + "@2x.png";
-								
-																	//console.log(day4MinTemp);
-																	//console.log(day4MaxTemp);
-																	//console.log(day4Forecast);
-																	//console.log(day4WeatherIcon);
-								
-																	//forecast day 5 for hiking
-								
-																	day5MinTemp = result['data'][39].main.temp_min;
-																	day5MaxTemp = result['data'][39].main.temp_max;
-																	day5Forecast = result['data'][39]['weather'][0]['description'].charAt(0).toUpperCase() + result['data'][39]['weather'][0]['description'].slice(1);
-																	day5WeatherIcon = "https://openweathermap.org/img/wn/" + result['data'][39]['weather'][0]['icon'] + "@2x.png";
-								
-																	//console.log(day5MinTemp);
-																	//console.log(day5MaxTemp);
-																	//console.log(day5Forecast);
-																	//console.log(day5WeatherIcon);
-																	 
-																}
-								
-															},
-															error: function(jqXHR, textStatus, errorThrown) {
-																console.log(jqXHR);
-															}
-								
-								
-														});
-
-
 
 														let m = L.marker([lat, lng], {icon: greenMarker}).bindPopup(
 															"<h6 align='center'>" + hikingPoints[i].name + "</h6><br/><img src='" + result['data'][i]['images'][0].sizes.medium.url + "' class='hikingImage'><br/>" + hikingPoints[i].snippet + "<br/>"
-															+ "<a href =https://en.wikipedia.org/wiki/" + tidiedHiking + " target='_blank'><i class='fab fa-wikipedia-w fa-lg'></a><table><tr><td>"
+															+ "<a href =https://en.wikipedia.org/wiki/" + tidiedHiking + " target='_blank'><i class='fab fa-wikipedia-w fa-lg'></a>"
+															/*
+															+ "<table><tr><td>" +
 															+ day1WeatherIcon + day1Forecast + "</td><td>"
 															+ day2WeatherIcon + day2Forecast + "</td><td>"
 															+ day3WeatherIcon + day3Forecast + "</td><td>"
 															+ day4WeatherIcon + day4Forecast + "</td><td>"
 															+ day5WeatherIcon + day5Forecast + "</td></tr></table>"
-															);
+															*/
+														);
 															
 
 														markerCluster2.addLayer(m);
@@ -875,6 +712,8 @@ $(document).ready(function(){
 												if (result.status.name == "ok") {
 
 													var cuisinePoints = result['data'];
+
+													//markerCluster3 = L.markerClusterGroup();
 
 													for (let i = 0; i < cuisinePoints.length; i++) {
 
@@ -920,6 +759,8 @@ $(document).ready(function(){
 
 													var sightPoints = result['data'];
 
+													//markerCluster4 = L.markerClusterGroup();
+
 													for (let i = 0; i < sightPoints.length; i++) {
 
 														var yellowMarker = L.ExtraMarkers.icon({
@@ -933,105 +774,18 @@ $(document).ready(function(){
 														let lat = sightPoints[i].coordinates.latitude;
 														let lng = sightPoints[i].coordinates.longitude;
 
-														let day1MinTemp, day1MaxTemp, day1Forecast, day1WeatherIcon, day2MinTemp, day2MaxTemp, day2Forecast, day2WeatherIcon,
-														day3MinTemp, day3MaxTemp, day3Forecast, day3WeatherIcon, day4MinTemp, day4MaxTemp, day4Forecast, day4WeatherIcon,
-														day5MinTemp, day5MaxTemp, day5Forecast, day5WeatherIcon
-
-														$.ajax({
-															url: "php/weatherForecast.php",
-															type: 'POST',
-															dataType: "json",
-															data: {
-																lat: lat,
-																lng: lng,
-															},   
-															success: function(result) {
-								
-																//console.log(result);
-								
-																if (result.status.name == "ok") {
-								
-																	//forecast day 1 for sightseeing
-								
-																	day1MinTemp = result['data'][8].main.temp_min;
-																	day1MaxTemp = result['data'][8].main.temp_max;
-																	day1Forecast = result['data'][8]['weather'][0]['description'].charAt(0).toUpperCase() + result['data'][8]['weather'][0]['description'].slice(1);
-																	day1WeatherIcon = "https://openweathermap.org/img/wn/" + result['data'][8]['weather'][0]['icon'] + "@2x.png";
-								
-																	//console.log(day1MinTemp);
-																	//console.log(day1MaxTemp);
-																	//console.log(day1Forecast);
-																	//console.log(day1WeatherIcon);
-								
-																	//forecast day 2 for sightseeing
-								
-																	day2MinTemp = result['data'][16].main.temp_min;
-																	day2MaxTemp = result['data'][16].main.temp_max;
-																	day2Forecast = result['data'][16]['weather'][0]['description'].charAt(0).toUpperCase() + result['data'][16]['weather'][0]['description'].slice(1);
-																	day2WeatherIcon = "https://openweathermap.org/img/wn/" + result['data'][16]['weather'][0]['icon'] + "@2x.png";
-								
-																	//console.log(day2MinTemp);
-																	//console.log(day2MaxTemp);
-																	//console.log(day2Forecast);
-																	//console.log(day2WeatherIcon);
-								
-																	//forecast day 3 fro sightseeing
-								
-																	day3MinTemp = result['data'][24].main.temp_min;
-																	day3MaxTemp = result['data'][24].main.temp_max;
-																	day3Forecast = result['data'][24]['weather'][0]['description'].charAt(0).toUpperCase() + result['data'][24]['weather'][0]['description'].slice(1);
-																	day3WeatherIcon = "https://openweathermap.org/img/wn/" + result['data'][24]['weather'][0]['icon'] + "@2x.png";
-																	
-																	//console.log(day3MinTemp);
-																	//console.log(day3MaxTemp);
-																	//console.log(day3Forecast);
-																	//console.log(day3WeatherIcon);
-								
-																	//forecast day 4 for sightseeing
-								
-																	day4MinTemp = result['data'][32].main.temp_min;
-																	day4MaxTemp = result['data'][32].main.temp_max;
-																	day4Forecast = result['data'][32]['weather'][0]['description'].charAt(0).toUpperCase() + result['data'][32]['weather'][0]['description'].slice(1);
-																	day4WeatherIcon = "https://openweathermap.org/img/wn/" + result['data'][32]['weather'][0]['icon'] + "@2x.png";
-								
-																	//console.log(day4MinTemp);
-																	//console.log(day4MaxTemp);
-																	//console.log(day4Forecast);
-																	//console.log(day4WeatherIcon);
-								
-																	//forecast day 5 for sightseeing
-								
-																	day5MinTemp = result['data'][39].main.temp_min;
-																	day5MaxTemp = result['data'][39].main.temp_max;
-																	day5Forecast = result['data'][39]['weather'][0]['description'].charAt(0).toUpperCase() + result['data'][39]['weather'][0]['description'].slice(1);
-																	day5WeatherIcon = "https://openweathermap.org/img/wn/" + result['data'][39]['weather'][0]['icon'] + "@2x.png";
-								
-																	//console.log(day5MinTemp);
-																	//console.log(day5MaxTemp);
-																	//console.log(day5Forecast);
-																	//console.log(day5WeatherIcon);
-																	 
-																}
-								
-															},
-															error: function(jqXHR, textStatus, errorThrown) {
-																console.log(jqXHR);
-															}
-								
-								
-														});
-
-
-
 														let m = L.marker([lat, lng], {icon: yellowMarker}).bindPopup(
 															"<h6 align='center'>" + sightPoints[i].name + "</h6><br/><img src='" + result['data'][i]['images'][0].sizes.medium.url + "' class='sightImage'><br/>" + sightPoints[i].snippet + "<br/>"
-															+ "<a href =https://en.wikipedia.org/wiki/" + tidiedSight + " target='_blank'><i class='fab fa-wikipedia-w fa-lg'></a><table><tr><td>"
+															+ "<a href =https://en.wikipedia.org/wiki/" + tidiedSight + " target='_blank'><i class='fab fa-wikipedia-w fa-lg'></a>"
+															/*
+															+ "<table><tr><td>" +
 															+ day1WeatherIcon + day1Forecast + "</td><td>"
 															+ day2WeatherIcon + day2Forecast + "</td><td>"
 															+ day3WeatherIcon + day3Forecast + "</td><td>"
 															+ day4WeatherIcon + day4Forecast + "</td><td>"
 															+ day5WeatherIcon + day5Forecast + "</td></tr></table>"
-															);
+															*/
+														);
 
 														markerCluster4.addLayer(m);
 													}
@@ -1044,6 +798,38 @@ $(document).ready(function(){
 												console.log(jqXHR);
 											}
 										});
+
+
+										//Images modal content
+
+										$.ajax({
+											url: "php/countryImage.php",
+											type: 'POST',
+											dataType: "json",
+											data: {"tidiedCountry": tidiedCountry}, 
+											success: function(result) {
+			
+												//console.log(result);
+												
+												if (result.status.name == "ok") {
+
+													photo1 = result['data'][0].sizes.medium.url;
+													photo2 = result['data'][1].sizes.medium.url;
+													photo3 = result['data'][2].sizes.medium.url;
+													photo4 = result['data'][3].sizes.medium.url;
+
+													$('.d-block w-100 1I').html('<img src="' + photo1 + '" >');
+													$('.d-block w-100 2I').html('<img src="' + photo2 + '" >');
+													$('.d-block w-100 3I').html('<img src="' + photo3 + '" >');
+			
+												}
+			
+											},
+											error: function(jqXHR, textStatus, errorThrown) {
+												console.log(jqXHR);
+											}
+										});
+
 
 									}
 
@@ -1098,21 +884,21 @@ $(document).ready(function(){
 										
 										//News 1
 
-										$('#title1').html('<a href ="' + result['data'][0].url + '" target="_blank">' + result['data'][0].title + '</a>');
-										$('#description1').html(result['data'][0].description);
-										$('.d-block w-100 1').html('<img src="' + result['data'][0].urlToImage + '" >');
+										$('#title1N').html('<a href ="' + result['data'][0].url + '" target="_blank">' + result['data'][0].title + '</a>');
+										$('#description1N').html(result['data'][0].description);
+										$('.d-block w-100 1N').html('<img src="' + result['data'][0].urlToImage + '" >');
 
 										//News 2
 
-										$('#title2').html('<a href ="' + result['data'][1].url + '" target="_blank">' + result['data'][1].title + '</a>');
-										$('#description2').html(result['data'][1].description);
-										$('.d-block w-100 2').html('<img src="' + result['data'][1].urlToImage + '" >');
+										$('#title2N').html('<a href ="' + result['data'][1].url + '" target="_blank">' + result['data'][1].title + '</a>');
+										$('#description2N').html(result['data'][1].description);
+										$('.d-block w-100 2N').html('<img src="' + result['data'][1].urlToImage + '" >');
 
 										//News 3
 
-										$('#title3').html('<a href ="' + result['data'][2].url + '" target="_blank">' + result['data'][2].title + '</a>');
-										$('#description3').html(result['data'][2].description);
-										$('.d-block w-100 3').html('<img src="' + result['data'][2].urlToImage + '" >');
+										$('#title3N').html('<a href ="' + result['data'][2].url + '" target="_blank">' + result['data'][2].title + '</a>');
+										$('#description3N').html(result['data'][2].description);
+										$('.d-block w-100 3N').html('<img src="' + result['data'][2].urlToImage + '" >');
 
                                     }
 

@@ -70,6 +70,12 @@
         max-height: 80px;
     }
 
+    .modal-content .modal-header4 {
+        background: lightgray;
+        color: #fff;
+        max-height: 80px;
+    }
+
     .modal-content .modal-body {
         font-size: 0.9em;
     }
@@ -105,6 +111,11 @@
         display: inline-block;
         font-size: 14px;
     }
+    
+    /*main popup*/
+    .popuptitle, .popupbottom {
+        text-align: center;
+    }
 
     /*cluster images*/
 
@@ -121,3 +132,4 @@
         position: fixed;
         z-index: 100;
     }
+
