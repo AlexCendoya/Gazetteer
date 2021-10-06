@@ -5,8 +5,7 @@
 
     $executionStartTime = microtime(true);
 
-    $url='https://newsapi.org/v2/top-headlines?country=' . $_REQUEST['isoCode'] . '&apiKey=d62132888e854bccb07f94361be27549';
-
+    $url='https://corona-api.com/countries/' . $_REQUEST['isoCode'];
     
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
@@ -22,7 +21,7 @@
     $output['status']['name'] = "ok";
     $output['status']['description'] = "success";
     $output['status']['returnedIn'] = intval((microtime(true) - $executionStartTime) * 1000) . " ms";
-    $output['data'] = $decode['articles'];
+    $output['data'] = $decode['data'];
 
     header('Content-Type: application/json; charset=UTF-8');
 

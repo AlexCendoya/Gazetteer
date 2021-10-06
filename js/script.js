@@ -30,12 +30,12 @@ $(document).ready(function(){
 	});
 
 	
-	var marker, markerCluster1, markerCluster2, markerCluster3, markerCluster4
+	var markerCluster1 = L.markerClusterGroup();
+	var markerCluster2 = L.markerClusterGroup();
+	var markerCluster3 = L.markerClusterGroup();
+	var markerCluster4 = L.markerClusterGroup();
 
 	//Layer control
-	console.log(marker);
-	console.log(markerCluster1);
-	console.log(markerCluster2);
 	
 	var baseLayers = {
 		"Satellite": Esri_WorldImagery,
@@ -44,17 +44,14 @@ $(document).ready(function(){
 		"Streets": OpenStreetMap_Mapnik
 	};
 
-	/*
-
 	var overLays = {
-		"Your location": marker
-		"Cities": markerCluster1,
-		"Points of interest": markerCluster2
+		"Main cities": markerCluster1,
+		"Best hiking tracks": markerCluster2,
+		"Best restaurants": markerCluster3,
+		"Best sightseeing points": markerCluster4
 	};
-			*/
 
-	//overLays to be included
-	L.control.layers(baseLayers, null).addTo(mymap);
+	L.control.layers(baseLayers, overLays).addTo(mymap);
 
 	//Info Buttons
 
@@ -66,7 +63,7 @@ $(document).ready(function(){
 		$('#myModal2').modal('show');
 	}, {position: 'bottomright'}).addTo(mymap);
 
-	var weatherButton = L.easyButton('<i class="fas fa-cloud-sun fa-lg"></i>', function(btn, mymap) {
+	var weatherButton = L.easyButton('<i class="fas fa-newspaper fa-lg"></i>', function(btn, mymap) {
 		$('#myModal3').modal('show');
 	}, {position: 'bottomright'}).addTo(mymap);
 	
@@ -207,7 +204,7 @@ $(document).ready(function(){
 
 												// popup marker
 
-												marker = L.marker(coords).addTo(mymap).bindPopup(
+												var marker = L.marker(coords).addTo(mymap).bindPopup(
 
 													"<h5 align='center'>You are here!</h5><h6>" + suburb + " (" + cityName + ")</h6><hr/><table><tr><td><img src="
 													+ localWeatherIcon + " ></td><td>"
@@ -440,7 +437,7 @@ $(document).ready(function(){
 
 							// modals content
 
-							$('.countryFlag').append("<img src='https://www.countryflags.io/" + isoCode + "/flat/64.png' />");
+							$('.countryFlag').html("<img src='https://www.countryflags.io/" + isoCode + "/flat/64.png' />");
 
 
                             $.ajax({
@@ -486,7 +483,7 @@ $(document).ready(function(){
 										var capitalCity = result.data2;
 										var tidiedCountry = countryName.replace(/ /g,"_");
 
-										$('.countryName').append(result.data1.official);
+										$('.countryName').html(result.data1.official);
 										$('#capitalCity').html(capitalCity);
 										$('#countryWikipedia').html("<a href =https://en.wikipedia.org/wiki/" + tidiedCountry + " target='_blank'>" + countryName + "</a>");
 
@@ -599,8 +596,6 @@ $(document).ready(function(){
 												if (result.status.name == "ok") {
 
 													var cityPoints = result['data'];
-
-													markerCluster1 = L.markerClusterGroup();
 
 													for (let i = 0; i < cityPoints.length; i++) {
 
@@ -740,8 +735,6 @@ $(document).ready(function(){
 												if (result.status.name == "ok") {
 
 													var hikingPoints = result['data'];
-
-													markerCluster2 = L.markerClusterGroup();
 
 													for (let i = 0; i < hikingPoints.length; i++) {
 
@@ -883,8 +876,6 @@ $(document).ready(function(){
 
 													var cuisinePoints = result['data'];
 
-													markerCluster3 = L.markerClusterGroup();
-
 													for (let i = 0; i < cuisinePoints.length; i++) {
 
 														var pinkMarker = L.ExtraMarkers.icon({
@@ -928,8 +919,6 @@ $(document).ready(function(){
 												if (result.status.name == "ok") {
 
 													var sightPoints = result['data'];
-
-													markerCluster4 = L.markerClusterGroup();
 
 													for (let i = 0; i < sightPoints.length; i++) {
 
@@ -1073,7 +1062,7 @@ $(document).ready(function(){
 								data: {"isoCode": isoCode}, 
 								success: function(result) {
 
-                                    //console.log(result);
+                                    console.log(result);
 
                                     if (result.status.name == "ok") {
 										
@@ -1109,16 +1098,21 @@ $(document).ready(function(){
 										
 										//News 1
 
-										console.log(result.data.source);
-										console.log(result.data.author);
-										console.log(result.data.title);
-										console.log(result.data.description);
-										console.log(result.data.url);
-										console.log(result.data.urlToImage);
+										$('#title1').html('<a href ="' + result['data'][0].url + '" target="_blank">' + result['data'][0].title + '</a>');
+										$('#description1').html(result['data'][0].description);
+										$('.d-block w-100 1').html('<img src="' + result['data'][0].urlToImage + '" >');
 
 										//News 2
 
+										$('#title2').html('<a href ="' + result['data'][1].url + '" target="_blank">' + result['data'][1].title + '</a>');
+										$('#description2').html(result['data'][1].description);
+										$('.d-block w-100 2').html('<img src="' + result['data'][1].urlToImage + '" >');
+
 										//News 3
+
+										$('#title3').html('<a href ="' + result['data'][2].url + '" target="_blank">' + result['data'][2].title + '</a>');
+										$('#description3').html(result['data'][2].description);
+										$('.d-block w-100 3').html('<img src="' + result['data'][2].urlToImage + '" >');
 
                                     }
 
