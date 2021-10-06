@@ -213,7 +213,7 @@ $(document).ready(function(){
 													"<div class='popuptitle'><h5 align='center'>You are here!</h5><h6>" + suburb + " (" + cityName + ")</h6></div><hr/><table><tr><td>"
 													+ localTime +"</td><td><img src="
 													+ localWeatherIcon + " ></td><td>"
-													+ localTemperature + "°C</td></tr></table><div class='popupbottom'"
+													+ localTemperature + "°C</td></tr></table><div class='popupbottom'>"
 													+ localWeather + ", " + localHumidity + "% humidity <br/>"  
 													+ "<a href =https://en.wikipedia.org/wiki/" + tidiedLocation + " target='_blank'><i class='fab fa-wikipedia-w fa-lg'></i></a></div>"
 
