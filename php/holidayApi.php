@@ -15,8 +15,16 @@
 
     $result=curl_exec($ch);
 
-
     $decode = json_decode($result,true);	
+
+	if( empty( $decode ) )
+	{
+		
+		$decode[0]['name'] = "No";
+		
+		$decode[0]['type'] = "None";
+		
+	}
 
     $output['status']['code'] = "200";
     $output['status']['name'] = "ok";

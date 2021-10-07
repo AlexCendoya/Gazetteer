@@ -34,7 +34,7 @@ $(document).ready(function(){
 	var markerCluster2 = L.markerClusterGroup();
 	var markerCluster3 = L.markerClusterGroup();
 	var markerCluster4 = L.markerClusterGroup();
-
+	
 	//Layer control
 	
 	var baseLayers = {
@@ -44,14 +44,8 @@ $(document).ready(function(){
 		"Streets": OpenStreetMap_Mapnik
 	};
 
-	var overLays = {
-		"Main cities": markerCluster1,
-		"Best hiking tracks": markerCluster2,
-		"Best restaurants": markerCluster3,
-		"Best sightseeing points": markerCluster4
-	};
+	var layerControls = L.control.layers(baseLayers,null).addTo(mymap);
 
-	L.control.layers(baseLayers, overLays).addTo(mymap);
 
 	//Info Buttons
 
@@ -254,10 +248,10 @@ $(document).ready(function(){
 
 								if (result.status.name == "ok") {
 
-									localTime = Date.parse(result['data'].replace(" ", "T")).toString('ddd, MMMM dd, yyyy h:mm tt');
+									localTime = Date.parse(result['data'].replace(" ", "T")).toString('dddd,'+ '</br>' + 'MMMM dd, yyyy' + '</br>' + 'h:mm tt');
 
 								}
-
+ 
 							},
 							error: function(jqXHR, textStatus, errorThrown) {
 								console.log(jqXHR);
@@ -332,8 +326,6 @@ $(document).ready(function(){
 
 			});
 			
-			//var data = { "weatherForecast" : weatherForecast }; 
-			
 			return weatherForecast;
 			
 		}
@@ -344,11 +336,9 @@ $(document).ready(function(){
 
 		$('#selectCountry').change( function() {
 			
-			if(inMyCountry)
-			{
-			
+			if(inMyCountry) {
+		
 				$("#selectCountry").val(isoCode);
-				
 				$("#preloader").fadeOut('slow', function() {
 
 					$(this).remove();
@@ -358,9 +348,7 @@ $(document).ready(function(){
 				inMyCountry = false;
 									
 			} else {
-				
 				isoCode = $("#selectCountry").val();
-				
 			}
 			
 			//console.log("Country we are in: " + isoCode);			
@@ -380,32 +368,32 @@ $(document).ready(function(){
 						{
 							
 							if (mymap.hasLayer(border)) {								
-								mymap.removeLayer(border);								
+								mymap.removeLayer(border);
 							}
 							
-							if (mymap.hasLayer(overLays)) {
-								mymap.removeLayer(overLays);
-							}
-
-							//console.log(overLays);
 
 							if (mymap.hasLayer(markerCluster1)) {
 								mymap.removeLayer(markerCluster1);
+								markerCluster1 = L.markerClusterGroup();
+								
 							}
 
                             if (mymap.hasLayer(markerCluster2)) {
 								mymap.removeLayer(markerCluster2);
+								markerCluster2 = L.markerClusterGroup();
 							}
 
 							if (mymap.hasLayer(markerCluster3)) {
 								mymap.removeLayer(markerCluster3);
+								markerCluster3 = L.markerClusterGroup();
 							}
 
 							if (mymap.hasLayer(markerCluster4)) {
 								mymap.removeLayer(markerCluster4);
+								markerCluster4 = L.markerClusterGroup();
 							}
-	
-
+													
+							
 							var borderLines = result["data"];
 
 							var borderStyle = {
@@ -508,7 +496,7 @@ $(document).ready(function(){
 														}, 
 														success: function(result) {
 
-															//console.log(result);  
+															console.log(result);  
 
 															if (result.status.name == "ok") {
 
@@ -528,7 +516,8 @@ $(document).ready(function(){
 																		"isoCode": isoCode,
 																		"year": year,
 																		"month": month,
-																		"day": day}, 
+																		"day": day
+																	}, 
 																	success: function(result) {
 									
 																		console.log(result);
@@ -537,12 +526,8 @@ $(document).ready(function(){
 									
 																			$('#holiday').html(result['data1'] + " (" + result['data2'] + ")");
 
-																		} else {
-
-																			$('#holiday').html("No");
-
-																		}
-									
+																		} 
+																		
 																	},
 																	error: function(jqXHR, textStatus, errorThrown) {
 																		console.log(jqXHR);
@@ -610,23 +595,20 @@ $(document).ready(function(){
 														
 														//console.log(  weatherForecast["city"][0] );
 														
-														for( var w = 0; w < weatherForecast.length; w++)
-														{
-															
+														for( var w = 0; w < weatherForecast.length; w++) {
 															//console.log( );
-
 														}											
 														
 														
 														let m = L.marker([lat, lng], {icon: blackMarker}).bindPopup(
-															"<h6 align='center'>" + cityPoints[i].name + "</h6><br/><img src='" + result['data'][i]['images'][0].sizes.medium.url + "' class='cityImage'><br/>" + cityPoints[i].snippet + "<br/>" 
-															+ "<a href =https://en.wikipedia.org/wiki/" + tidiedCity + " target='_blank'><i class='fab fa-wikipedia-w fa-lg'></a>"
+															"<h6 align='center'>" + cityPoints[i].name + "</h6><br/><img src='" + result['data'][i]['images'][0].sizes.medium.url + "' class='cityImage'><br/><div class='popupbottom'>" 
+															+ cityPoints[i].snippet + "<br/>" + "<a href =https://en.wikipedia.org/wiki/" + tidiedCity + " target='_blank'><i class='fab fa-wikipedia-w fa-lg'></a></div>"
 															
-															+ "<table><tr><td>" +
+															//+ "<table><tr><td>" +
 															
 															//+ weatherForeCastOutput + 
 															
-															+ "</td></tr></table>"
+															//+ "</td></tr></table>"
 															
 														);
 														
@@ -674,8 +656,8 @@ $(document).ready(function(){
 
 
 														let m = L.marker([lat, lng], {icon: greenMarker}).bindPopup(
-															"<h6 align='center'>" + hikingPoints[i].name + "</h6><br/><img src='" + result['data'][i]['images'][0].sizes.medium.url + "' class='hikingImage'><br/>" + hikingPoints[i].snippet + "<br/>"
-															+ "<a href =https://en.wikipedia.org/wiki/" + tidiedHiking + " target='_blank'><i class='fab fa-wikipedia-w fa-lg'></a>"
+															"<h6 align='center'>" + hikingPoints[i].name + "</h6><br/><img src='" + result['data'][i]['images'][0].sizes.medium.url + "' class='hikingImage'><br/><div class='popupbottom'>" 
+															+ hikingPoints[i].snippet + "<br/>" + "<a href =https://en.wikipedia.org/wiki/" + tidiedHiking + " target='_blank'><i class='fab fa-wikipedia-w fa-lg'></a></div>"
 															/*
 															+ "<table><tr><td>" +
 															+ day1WeatherIcon + day1Forecast + "</td><td>"
@@ -730,8 +712,8 @@ $(document).ready(function(){
 														let lng = cuisinePoints[i].coordinates.longitude;
 
 														let m = L.marker([lat, lng], {icon: pinkMarker}).bindPopup(
-															"<h6 align='center'>" + cuisinePoints[i].name + "</h6><br/><img src='" + result['data'][i]['images'][0].sizes.medium.url + "' class='cuisineImage'><br/>" + cuisinePoints[i].snippet + "<br/>"
-															+ "<a href =https://en.wikipedia.org/wiki/" + tidiedCuisine + " target='_blank'><i class='fab fa-wikipedia-w fa-lg'></a>"
+															"<h6 align='center'>" + cuisinePoints[i].name + "</h6><br/><img src='" + result['data'][i]['images'][0].sizes.medium.url + "' class='cuisineImage'><br/><div class='popupbottom'>" 
+															+ cuisinePoints[i].snippet + "<br/>" + "<a href =https://en.wikipedia.org/wiki/" + tidiedCuisine + " target='_blank'><i class='fab fa-wikipedia-w fa-lg'></a></div>"
 															);
 
 														markerCluster3.addLayer(m);
@@ -775,8 +757,8 @@ $(document).ready(function(){
 														let lng = sightPoints[i].coordinates.longitude;
 
 														let m = L.marker([lat, lng], {icon: yellowMarker}).bindPopup(
-															"<h6 align='center'>" + sightPoints[i].name + "</h6><br/><img src='" + result['data'][i]['images'][0].sizes.medium.url + "' class='sightImage'><br/>" + sightPoints[i].snippet + "<br/>"
-															+ "<a href =https://en.wikipedia.org/wiki/" + tidiedSight + " target='_blank'><i class='fab fa-wikipedia-w fa-lg'></a>"
+															"<h6 align='center'>" + sightPoints[i].name + "</h6><br/><img src='" + result['data'][i]['images'][0].sizes.medium.url + "' class='sightImage'><br/><div class='popupbottom'>" 
+															+ sightPoints[i].snippet + "<br/>" + "<a href =https://en.wikipedia.org/wiki/" + tidiedSight + " target='_blank'><i class='fab fa-wikipedia-w fa-lg'></a></div>"
 															/*
 															+ "<table><tr><td>" +
 															+ day1WeatherIcon + day1Forecast + "</td><td>"
@@ -813,14 +795,16 @@ $(document).ready(function(){
 												
 												if (result.status.name == "ok") {
 
-													photo1 = result['data'][0].sizes.medium.url;
-													photo2 = result['data'][1].sizes.medium.url;
-													photo3 = result['data'][2].sizes.medium.url;
-													photo4 = result['data'][3].sizes.medium.url;
-
-													$('.d-block w-100 1I').html('<img src="' + photo1 + '" >');
-													$('.d-block w-100 2I').html('<img src="' + photo2 + '" >');
-													$('.d-block w-100 3I').html('<img src="' + photo3 + '" >');
+													$('#1I div.carousel-image').css('background-image', 'url("' + result['data'][0].sizes.medium.url + '")');
+													$('#2I div.carousel-image').css('background-image', 'url("' + result['data'][1].sizes.medium.url + '")');
+													$('#3I div.carousel-image').css('background-image', 'url("' + result['data'][2].sizes.medium.url + '")');
+													$('#4I div.carousel-image').css('background-image', 'url("' + result['data'][3].sizes.medium.url + '")');
+													$('#5I div.carousel-image').css('background-image', 'url("' + result['data'][4].sizes.medium.url + '")');
+													$('#6I div.carousel-image').css('background-image', 'url("' + result['data'][5].sizes.medium.url + '")');
+													$('#7I div.carousel-image').css('background-image', 'url("' + result['data'][6].sizes.medium.url + '")');
+													$('#8I div.carousel-image').css('background-image', 'url("' + result['data'][7].sizes.medium.url + '")');
+													$('#9I div.carousel-image').css('background-image', 'url("' + result['data'][8].sizes.medium.url + '")');
+													$('#10I div.carousel-image').css('background-image', 'url("' + result['data'][9].sizes.medium.url + '")');
 			
 												}
 			
@@ -852,7 +836,6 @@ $(document).ready(function(){
 
                                     if (result.status.name == "ok") {
 										
-
                                         $('#confirmed').html(result['data'].latest_data.confirmed.toLocaleString("en"));
 										$('#deaths').html(result['data'].latest_data.deaths.toLocaleString("en"));
 										$('#recovered').html(result['data'].latest_data.recovered.toLocaleString("en"));
@@ -867,8 +850,9 @@ $(document).ready(function(){
                                 error: function(jqXHR, textStatus, errorThrown) {
                                     console.log(jqXHR);
                                 }
-                            });
-
+								
+                            });	
+							
 							//News modal content
 
 							$.ajax({
@@ -878,28 +862,34 @@ $(document).ready(function(){
 								data: {"isoCode": isoCode}, 
 								success: function(result) {
 
-                                    //console.log(result);
+                                    console.log(result);
 
                                     if (result.status.name == "ok") {
 										
 										//News 1
 
-										$('#title1N').html('<a href ="' + result['data'][0].url + '" target="_blank">' + result['data'][0].title + '</a>');
-										$('#description1N').html(result['data'][0].description);
-										$('.d-block w-100 1N').html('<img src="' + result['data'][0].urlToImage + '" >');
+										$('#1N #title').html('<a href ="' + result['data'][0].url + '" target="_blank">' + result['data'][0].title + '</a>');
+										$('#1N #description').html(result['data'][0].description);
+										$('#1N div.carousel-image').css('background-image', 'url("' + result['data'][0].urlToImage + '")');
 
 										//News 2
 
-										$('#title2N').html('<a href ="' + result['data'][1].url + '" target="_blank">' + result['data'][1].title + '</a>');
-										$('#description2N').html(result['data'][1].description);
-										$('.d-block w-100 2N').html('<img src="' + result['data'][1].urlToImage + '" >');
+										$('#2N #title').html('<a href ="' + result['data'][1].url + '" target="_blank">' + result['data'][1].title + '</a>');
+										$('#2N #description').html(result['data'][1].description);
+										$('#2N div.carousel-image').css('background-image', 'url("' + result['data'][1].urlToImage + '")');
 
 										//News 3
 
-										$('#title3N').html('<a href ="' + result['data'][2].url + '" target="_blank">' + result['data'][2].title + '</a>');
-										$('#description3N').html(result['data'][2].description);
-										$('.d-block w-100 3N').html('<img src="' + result['data'][2].urlToImage + '" >');
+										$('#3N #title').html('<a href ="' + result['data'][2].url + '" target="_blank">' + result['data'][2].title + '</a>');
+										$('#3N #description').html(result['data'][2].description);
+										$('#3N div.carousel-image').css('background-image', 'url("' + result['data'][2].urlToImage + '")');
 
+										//News 4
+
+										$('#4N #title').html('<a href ="' + result['data'][3].url + '" target="_blank">' + result['data'][3].title + '</a>');
+										$('#4N #description').html(result['data'][3].description);
+										$('#4N div.carousel-image').css('background-image', 'url("' + result['data'][3].urlToImage + '")');
+										
                                     }
 
                                 },
@@ -907,7 +897,6 @@ $(document).ready(function(){
                                     console.log(jqXHR);
                                 }
                             });
-
 						
 						}
 
@@ -919,6 +908,8 @@ $(document).ready(function(){
 				}
 
 			});
+			
+			
 
 		});	
 		
