@@ -204,10 +204,10 @@ $(document).ready(function(){
 
 												marker = L.marker(coords).addTo(mymap).bindPopup(
 
-													"<div class='popuptitle'><h5 align='center'>You are here!</h5><h6>" + suburb + " (" + cityName + ")</h6></div><hr/><table class='popupbody'><tr><td>"
+													"<div class='popuptitle'><h5 align='center'>You are here!</h5><h6>" + suburb + " (" + cityName + ")</h6></div><hr/><table class='popupbody' id='mainpopupbody'><tr><td>"
 													+ localTime +"</td><td><img src="
 													+ localWeatherIcon + " ></td><td>"
-													+ localTemperature + "°C</td></tr></table><div class='popupbottom'>"
+													+ localTemperature + "°C</td></tr></table><div class='popupbottom' id='mainpopupbottom'>"
 													+ localWeather + ", " + localHumidity + "% humidity <br/>"  
 													+ "<a href =https://en.wikipedia.org/wiki/" + tidiedLocation + " target='_blank'><i class='fab fa-wikipedia-w fa-lg'></i></a></div>"
 
@@ -273,78 +273,17 @@ $(document).ready(function(){
 
 		}  
 
-		function getWeatherForecast( lat, lng )
-		{
-			
-			var weatherForecast = new Array();
-			
-			$.ajax({
-				url: "php/weatherForecast.php",
-				type: 'POST',
-				dataType: "json",
-				data: {
-					lat: lat,
-					lng: lng,
-				},   
-				success: function(result) {
-
-					//console.log(result);
-
-					if (result.status.name == "ok") {
-						
-						
-						var lastEntry = 0;
-						
-						for( var i = 1; i < 6; i++ )
-						{
-														
-							if(i == 5)
-							{
-								lastEntry = 1;
-							}
-							
-							var day = []
-							
-							var getDayPosition = ( i * 8 ) - lastEntry;
-							
-							day["day"] = i;
-							day["temp_min"] = result['data'][getDayPosition].main.temp_min;
-							day["temp_max"] = result['data'][getDayPosition].main.temp_max;
-							day["description"] = result['data'][getDayPosition]['weather'][0]['description'].charAt(0).toUpperCase() + result['data'][getDayPosition]['weather'][0]['description'].slice(1);
-							day["icon"] = "https://openweathermap.org/img/wn/" + result['data'][getDayPosition]['weather'][0]['icon'] + "@2x.png";
-										
-							weatherForecast[i-1] = day;
-							
-						}
-								
-					}
-
-				},
-				error: function(jqXHR, textStatus, errorThrown) {
-					console.log(jqXHR);
-				}
-
-			});
-			
-			return weatherForecast;
-			
-		}
-
 
 
 		// Borders
 
 		$('#selectCountry').change( function() {
+
+			$("#preloader").fadeIn('slow');
 			
 			if(inMyCountry) {
 		
 				$("#selectCountry").val(isoCode);
-				$("#preloader").fadeOut('slow', function() {
-
-					$(this).remove();
-
-				});
-				
 				inMyCountry = false;
 									
 			} else {
@@ -473,9 +412,7 @@ $(document).ready(function(){
 
 												if (result.status.name == "ok") {
 
-													$('#countryTemperature').html(result.data1.temp + "°C");
-													$('#countryHumidity').html(result.data1.humidity + "%");
-													$('#countryWeather').html(result['data2'][0]['description'].charAt(0).toUpperCase() + result['data2'][0]['description'].slice(1));
+													$('#countryTemperature').html(result.data1.temp + "°C*");
 
 													var countryWeatherIcon = result['data2'][0]['icon'];
 
@@ -500,7 +437,7 @@ $(document).ready(function(){
 
 															if (result.status.name == "ok") {
 
-																$('#countryTime').html(Date.parse(result['data'].replace(" ", "T")).toString('dddd, MMMM dd, yyyy h:mm tt'));
+																$('#countryTime').html(Date.parse(result['data'].replace(" ", "T")).toString('dddd,' + '</br>' + 'MMMM dd, yyyy'  + '</br>' + 'h:mm tt'));
 
 																var year = result['data'].slice(0,4);
 																var month = result['data'].slice(5,7);
@@ -554,75 +491,132 @@ $(document).ready(function(){
 
 										//marker clusters
 
+
+										var promises = [];
+										
 										$.ajax({
 											url: "php/cityCluster.php",
 											type: 'POST',
 											dataType: "json",
 											data: {"tidiedCountry": tidiedCountry},
-											success: function(result) {
+											success: function( result ) {
 
 												//console.log(result);  
-
+												
 												if (result.status.name == "ok") {
 
 													var cityPoints = result['data'];
+													
+													$("#preloader").fadeIn('slow');
 
-													//markerCluster1 = L.markerClusterGroup();
+													for ( var i = 0; i < cityPoints.length; i++ ) {												
+														
+														var weatherForecast = [];
 
-													for (let i = 0; i < cityPoints.length; i++) {
-
+														var weatherForecastOutput = "";
+														
 														var blackMarker = L.ExtraMarkers.icon({
 															icon: 'fa-city',
 															markerColor: 'blue-dark',
 															shape: 'square',
 															prefix: 'fa',
 														});
-
+														
+														var city = cityPoints[i].name;
+														var cityImage = cityPoints[i]['images'][0].sizes.medium.url;
+														var citySnippet = cityPoints[i].snippet;
 														var tidiedCity = cityPoints[i].name.replace(/ /g,"_");
 
 														let lat = cityPoints[i].coordinates.latitude;
-														let lng = cityPoints[i].coordinates.longitude;
-														
-														let weatherForecast = [];
-														
-														weatherForecast[tidiedCity] = getWeatherForecast( lat, lng );
-														
-														//console.log( weatherForecast );
-														
-														//console.log( weatherForecast[tidiedCity][0] );
-														
-														//array1.forEach(element => console.log(element));
-														
-														//console.log(  weatherForecast["city"][0] );
-														
-														for( var w = 0; w < weatherForecast.length; w++) {
-															//console.log( );
-														}											
-														
-														
-														let m = L.marker([lat, lng], {icon: blackMarker}).bindPopup(
-															"<h6 align='center'>" + cityPoints[i].name + "</h6><br/><img src='" + result['data'][i]['images'][0].sizes.medium.url + "' class='cityImage'><br/><div class='popupbottom'>" 
-															+ cityPoints[i].snippet + "<br/>" + "<a href =https://en.wikipedia.org/wiki/" + tidiedCity + " target='_blank'><i class='fab fa-wikipedia-w fa-lg'></a></div>"
-															
-															//+ "<table><tr><td>" +
-															
-															//+ weatherForeCastOutput + 
-															
-															//+ "</td></tr></table>"
-															
-														);
-														
-														markerCluster1.addLayer(m);
+														let lng = cityPoints[i].coordinates.longitude;														
+																													
+														var request = $.ajax({
+															url: "php/weatherForecast.php",
+															type: 'POST',
+															dataType: "json",
+															data: {
+																lat: lat,
+																lng: lng,
+															},   
+															success: function( result ) {
 
-													}
+																//console.log(result);															
 
-													mymap.addLayer(markerCluster1);
+																if (result.status.name == "ok") {
+
+																	var lastEntry = 0;
+
+																	for( var d = 1; d < 6; d++ ) {
+
+																		if(d == 5) {
+																		
+																			lastEntry = 1;
+																		}
+
+																		var day = {};
+
+																		var getDayPosition = ( d * 8 ) - lastEntry;
+
+																		day.number = d;
+																		//day.temp_min = result['data'][getDayPosition].main.temp_min;
+																		//day.temp_max = result['data'][getDayPosition].main.temp_max;
+																		day.description = result['data'][getDayPosition]['weather'][0]['description'].charAt(0).toUpperCase() + result['data'][getDayPosition]['weather'][0]['description'].slice(1);
+																		day.icon = "https://openweathermap.org/img/wn/" + result['data'][getDayPosition]['weather'][0]['icon'] + "@2x.png";
+
+																		weatherForecast.push( day ) ;
+
+																	}
+
+																	for( var w = 0; w < weatherForecast.length; w++) {
+
+																		weatherForecastOutput += "<td><img src='" + weatherForecast[w].icon + "' width='55' /><br/><span style='text-align:center'>" + weatherForecast[w].description + "</span></td>";
+
+																	}
+
+
+																}
+																
+																var cityData = 	"<h6 align='center'>" + city + "</h6><br/>" + 
+																			   	"<img src='" 
+																				+ cityImage + "' class='cityImage'><br/><div class='popupbottom'>"
+																				+ citySnippet + "<br/><a href='https://en.wikipedia.org/wiki/"
+																				+ tidiedCity + "' target='_blank'><i class='fab fa-wikipedia-w fa-lg'></a></div>" +
+																				"<table><tr><td><b>Forecast:</b></td></tr><tr>" + weatherForecastOutput + "</tr></table>";
+																
+																var m = L.marker([lat, lng], {icon: blackMarker} ).bindPopup(cityData);
+
+																markerCluster1.addLayer(m);
+
+																weatherForecast = [];
+
+																weatherForecastOutput = "";
+
+
+															},
+															async: false,
+															error: function(jqXHR, textStatus, errorThrown) {
+																console.log(jqXHR);
+															}
+
+														});
+														
+														promises.push(request);
+														
+														mymap.addLayer(markerCluster1);
+
+													};
+													
+													$.when.apply(null, promises).done(function(){
+													   $("#preloader").fadeOut('slow');
+													})
 
 												}
-											},
+
+											},											
 											error: function(jqXHR, textStatus, errorThrown) {
 												console.log(jqXHR);
 											}
+											
 										});
 
 
@@ -658,14 +652,7 @@ $(document).ready(function(){
 														let m = L.marker([lat, lng], {icon: greenMarker}).bindPopup(
 															"<h6 align='center'>" + hikingPoints[i].name + "</h6><br/><img src='" + result['data'][i]['images'][0].sizes.medium.url + "' class='hikingImage'><br/><div class='popupbottom'>" 
 															+ hikingPoints[i].snippet + "<br/>" + "<a href =https://en.wikipedia.org/wiki/" + tidiedHiking + " target='_blank'><i class='fab fa-wikipedia-w fa-lg'></a></div>"
-															/*
-															+ "<table><tr><td>" +
-															+ day1WeatherIcon + day1Forecast + "</td><td>"
-															+ day2WeatherIcon + day2Forecast + "</td><td>"
-															+ day3WeatherIcon + day3Forecast + "</td><td>"
-															+ day4WeatherIcon + day4Forecast + "</td><td>"
-															+ day5WeatherIcon + day5Forecast + "</td></tr></table>"
-															*/
+
 														);
 															
 
@@ -759,14 +746,7 @@ $(document).ready(function(){
 														let m = L.marker([lat, lng], {icon: yellowMarker}).bindPopup(
 															"<h6 align='center'>" + sightPoints[i].name + "</h6><br/><img src='" + result['data'][i]['images'][0].sizes.medium.url + "' class='sightImage'><br/><div class='popupbottom'>" 
 															+ sightPoints[i].snippet + "<br/>" + "<a href =https://en.wikipedia.org/wiki/" + tidiedSight + " target='_blank'><i class='fab fa-wikipedia-w fa-lg'></a></div>"
-															/*
-															+ "<table><tr><td>" +
-															+ day1WeatherIcon + day1Forecast + "</td><td>"
-															+ day2WeatherIcon + day2Forecast + "</td><td>"
-															+ day3WeatherIcon + day3Forecast + "</td><td>"
-															+ day4WeatherIcon + day4Forecast + "</td><td>"
-															+ day5WeatherIcon + day5Forecast + "</td></tr></table>"
-															*/
+
 														);
 
 														markerCluster4.addLayer(m);

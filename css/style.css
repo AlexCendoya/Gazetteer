@@ -69,9 +69,8 @@
         max-height: 80px;
     }
 
-
     .modal-content .modal-body {
-        font-size: 1em;
+        font-size: 0.98em;
     }
 
     .modal-content .modal-body .info-headline {
@@ -86,8 +85,14 @@
     }
 
     .countryName {
-        text-align: center;
+        font-weight: bold;
     }
+
+    #note {
+        font-size: 7px;
+        text-align: right;
+    }
+
 
     /*zoom control*/
 
@@ -107,7 +112,7 @@
         color: #333;
         margin-top: 10px;
         display: inline-block;
-        font-size: 14px;
+        font-size: 13px;
     }
     
     /*main popup*/
@@ -117,8 +122,12 @@
     }
 
     .popupbody, .popupbottom {
-        font-size: 13px;
         width: 100%;
+        display: inline-block
+    }
+
+    #mainpopupbody, #mainpopupbottom {
+        font-size: 13px;
     }
 
 
@@ -138,11 +147,19 @@
         z-index: 100;
     }
 
-    .carousel-image
-	{
-		height:300px;
+    .carousel-image {
+		height: 400px;
 		background-size: cover;
+
 	}
+
+    .dim-pictures .carousel-item .carousel-image {
+        filter: brightness(30%);
+    }
+
+    #title {
+        color: darkgray !important
+    }
 
     .covid-header {
         background: darkgreen !important;
