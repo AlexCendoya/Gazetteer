@@ -53,12 +53,12 @@
 
     }
     
-
     .modal-content {
         font-family: sans-serif;
     }
 
     .modal-content .modal-header {
+        text-align: center;
         background: lightblue;
         color: #fff;
         max-height: 80px;
@@ -157,7 +157,7 @@
         filter: brightness(30%);
     }
 
-    #title {
+    .titles {
         color: darkgray !important
     }
 
