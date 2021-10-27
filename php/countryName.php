@@ -23,6 +23,7 @@
     $output['status']['returnedIn'] = intval((microtime(true) - $executionStartTime) * 1000) . " ms";
     $output['data1'] = $decode[0]['name'];
     $output['data2'] = $decode[0]['capital'][0];
+    $output['data3'] = $decode[0]['flags'][1];
 
     header('Content-Type: application/json; charset=UTF-8');
 

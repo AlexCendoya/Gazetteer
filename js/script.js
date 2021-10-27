@@ -44,7 +44,8 @@ $(document).ready(function(){
 		"Streets": OpenStreetMap_Mapnik
 	};
 
-	var layerControls = L.control.layers(baseLayers,null).addTo(mymap);
+	var layerControls = L.control.layers(baseLayers, null, {position: 'topleft'}).addTo(mymap);
+
 
 
 	//Info Buttons
@@ -81,7 +82,7 @@ $(document).ready(function(){
 			dataType: "json",     
 			success: function(result) {
 
-				//console.log(result);
+				console.log(result);
 
 				if (result.status.name == "ok") {
 
@@ -349,8 +350,6 @@ $(document).ready(function(){
 
 							// modals content
 
-							$('.countryFlag').html("<img src='https://www.countryflags.io/" + isoCode + "/flat/64.png' />");
-
 
                             $.ajax({
 								url: "php/restCountries.php",
@@ -387,7 +386,7 @@ $(document).ready(function(){
 								data: {"isoCode": isoCode},  
 								success: function(result) {
 
-									//console.log(result);
+									console.log(result);
 
 									if (result.status.name == "ok") {
 
@@ -398,6 +397,9 @@ $(document).ready(function(){
 										$('.countryName').html(result.data1.official);
 										$('#capitalCity').html(capitalCity);
 										$('#countryWikipedia').html("<a href =https://en.wikipedia.org/wiki/" + tidiedCountry + " target='_blank'>" + countryName + "</a>");
+										
+										$('.countryFlag').html("<img src=" + result.data3 + ">");
+
 
 										// capital city temperature, humidity, weather, weather icon and coordinates, in order to retrieve local time
 

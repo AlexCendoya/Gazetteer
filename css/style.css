@@ -84,6 +84,11 @@
         display: inline-block;
     }
 
+    .resize {
+        width: 50%;
+        height: auto;
+    }
+
     .countryName {
         font-weight: bold;
     }
@@ -137,7 +142,7 @@
         width: 100%;
     }
 
-    /*preloader*/
+    /*preloader
 
     #preloader {
         background: #000 url(loader.gif) no-repeat center center;
@@ -146,7 +151,7 @@
         position: fixed;
         z-index: 100;
     }
-
+*/
     .carousel-image {
 		height: 400px;
 		background-size: cover;
