@@ -348,8 +348,8 @@ $(document).ready(function(){
 							
 							mymap.fitBounds(border.getBounds());
 
-							// modals content
 
+							// modals content
 
                             $.ajax({
 								url: "php/restCountries.php",
@@ -386,7 +386,7 @@ $(document).ready(function(){
 								data: {"isoCode": isoCode},  
 								success: function(result) {
 
-									console.log(result);
+									//console.log(result);
 
 									if (result.status.name == "ok") {
 
@@ -397,8 +397,7 @@ $(document).ready(function(){
 										$('.countryName').html(result.data1.official);
 										$('#capitalCity').html(capitalCity);
 										$('#countryWikipedia').html("<a href =https://en.wikipedia.org/wiki/" + tidiedCountry + " target='_blank'>" + countryName + "</a>");
-										
-										$('.countryFlag').html("<img src=" + result.data3 + ">");
+										$('.countryFlag').html("<img class='resize' src=" + result.data3 + ">");
 
 
 										// capital city temperature, humidity, weather, weather icon and coordinates, in order to retrieve local time
@@ -435,7 +434,7 @@ $(document).ready(function(){
 														}, 
 														success: function(result) {
 
-															console.log(result);  
+															//console.log(result);  
 
 															if (result.status.name == "ok") {
 
@@ -700,8 +699,25 @@ $(document).ready(function(){
 														let lat = cuisinePoints[i].coordinates.latitude;
 														let lng = cuisinePoints[i].coordinates.longitude;
 
+
+														let cuisineImages = result['data'][i]['images'][0].sizes.medium.url;
+
+														if (!cuisineImages.hasOwnProperty('medium')) {
+															cuisineImages = "Image not available";
+														}
+														/*
+														var tempCuisineImages = []
+
+														for (var y=0; y < cuisineImages.length; y++) {
+															tempCuisineImages[y] = new Image()
+															tempCuisineImages[y].src = cuisineImages[y]
+														}
+
+														cache and check if it has own property
+														*/
+
 														let m = L.marker([lat, lng], {icon: pinkMarker}).bindPopup(
-															"<h6 align='center'>" + cuisinePoints[i].name + "</h6><br/><img src='" + result['data'][i]['images'][0].sizes.medium.url + "' class='cuisineImage'><br/><div class='popupbottom'>" 
+															"<h6 align='center'>" + cuisinePoints[i].name + "</h6><br/><img src='" + /*result['data'][i]['images'][0].sizes.medium.url*/ cuisineImages + "' class='cuisineImage'><br/><div class='popupbottom'>" 
 															+ cuisinePoints[i].snippet + "<br/>" + "<a href =https://en.wikipedia.org/wiki/" + tidiedCuisine + " target='_blank'><i class='fab fa-wikipedia-w fa-lg'></a></div>"
 															);
 
