@@ -142,16 +142,6 @@
         width: 100%;
     }
 
-    /*preloader*/
-
-    #preloader {
-        background: #000 url(loader.gif) no-repeat center center;
-        height: 100vh;
-        width: 100%;
-        position: fixed;
-        z-index: 100;
-    }
-
     .carousel-image {
 		height: 400px;
 		background-size: cover;
@@ -176,5 +166,15 @@
 
     .images-header {
         background:grey !important;
+    }
+
+    /*preloader*/
+
+    #preloader {
+        background: #000 url(loader.gif) no-repeat center center;
+        height: 100vh;
+        width: 100%;
+        position: fixed;
+        z-index: 100;
     }
 

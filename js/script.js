@@ -1,4 +1,3 @@
-
 $(document).ready(function(){
 
     //maps 
@@ -82,7 +81,7 @@ $(document).ready(function(){
 			dataType: "json",     
 			success: function(result) {
 
-				console.log(result);
+				//console.log(result);
 
 				if (result.status.name == "ok") {
 
@@ -458,7 +457,7 @@ $(document).ready(function(){
 																	}, 
 																	success: function(result) {
 									
-																		console.log(result);
+																		//console.log(result);
 									
 																		if (result.status.name == "ok") {
 									
@@ -648,10 +647,17 @@ $(document).ready(function(){
 
 														let lat = hikingPoints[i].coordinates.latitude;
 														let lng = hikingPoints[i].coordinates.longitude;
+														let hikingImages;
 
+														try {
+															hikingImages = result['data'][i]['images'][0].sizes.medium.url
+														} catch {
+															hikingImages = "js/Broken-image-icon-in-Chrome.gif";
+														}
 
+														//console.log(hikingImages);
 														let m = L.marker([lat, lng], {icon: greenMarker}).bindPopup(
-															"<h6 align='center'>" + hikingPoints[i].name + "</h6><br/><img src='" + result['data'][i]['images'][0].sizes.medium.url + "' class='hikingImage'><br/><div class='popupbottom'>" 
+															"<h6 align='center'>" + hikingPoints[i].name + "</h6><br/><img src='" + hikingImages + "' class='hikingImage'><br/><div class='popupbottom'>" 
 															+ hikingPoints[i].snippet + "<br/>" + "<a href =https://en.wikipedia.org/wiki/" + tidiedHiking + " target='_blank'><i class='fab fa-wikipedia-w fa-lg'></a></div>"
 
 														);
@@ -698,26 +704,16 @@ $(document).ready(function(){
 
 														let lat = cuisinePoints[i].coordinates.latitude;
 														let lng = cuisinePoints[i].coordinates.longitude;
-
-
-														let cuisineImages = result['data'][i]['images'][0].sizes.medium.url;
-
-														if (!cuisineImages.hasOwnProperty('medium')) {
-															cuisineImages = "Image not available";
+														let cuisineImages; 
+														
+														try {
+															cuisineImages = result['data'][i]['images'][0].sizes.medium.url;
+														} catch {
+															cuisineImages = "js/Broken-image-icon-in-Chrome.gif";
 														}
-														/*
-														var tempCuisineImages = []
-
-														for (var y=0; y < cuisineImages.length; y++) {
-															tempCuisineImages[y] = new Image()
-															tempCuisineImages[y].src = cuisineImages[y]
-														}
-
-														cache and check if it has own property
-														*/
-
+														
 														let m = L.marker([lat, lng], {icon: pinkMarker}).bindPopup(
-															"<h6 align='center'>" + cuisinePoints[i].name + "</h6><br/><img src='" + /*result['data'][i]['images'][0].sizes.medium.url*/ cuisineImages + "' class='cuisineImage'><br/><div class='popupbottom'>" 
+															"<h6 align='center'>" + cuisinePoints[i].name + "</h6><br/><img src='" + cuisineImages + "' class='cuisineImage'><br/><div class='popupbottom'>" 
 															+ cuisinePoints[i].snippet + "<br/>" + "<a href =https://en.wikipedia.org/wiki/" + tidiedCuisine + " target='_blank'><i class='fab fa-wikipedia-w fa-lg'></a></div>"
 															);
 
@@ -761,8 +757,16 @@ $(document).ready(function(){
 														let lat = sightPoints[i].coordinates.latitude;
 														let lng = sightPoints[i].coordinates.longitude;
 
+														let sightImages;
+
+														try {
+															sightImages = result['data'][i]['images'][0].sizes.medium.url;
+														} catch {
+															sightImages = "js/Broken-image-icon-in-Chrome.gif";
+														}
+														//console.log(sightImages);
 														let m = L.marker([lat, lng], {icon: yellowMarker}).bindPopup(
-															"<h6 align='center'>" + sightPoints[i].name + "</h6><br/><img src='" + result['data'][i]['images'][0].sizes.medium.url + "' class='sightImage'><br/><div class='popupbottom'>" 
+															"<h6 align='center'>" + sightPoints[i].name + "</h6><br/><img src='" + sightImages + "' class='sightImage'><br/><div class='popupbottom'>" 
 															+ sightPoints[i].snippet + "<br/>" + "<a href =https://en.wikipedia.org/wiki/" + tidiedSight + " target='_blank'><i class='fab fa-wikipedia-w fa-lg'></a></div>"
 
 														);
@@ -830,7 +834,7 @@ $(document).ready(function(){
 								data: {"isoCode": isoCode}, 
 								success: function(result) {
 
-                                    console.log(result);
+                                    //console.log(result);
 
                                     if (result.status.name == "ok") {
 										
@@ -860,33 +864,60 @@ $(document).ready(function(){
 								data: {"isoCode": isoCode}, 
 								success: function(result) {
 
-                                    console.log(result);
+                                    //console.log(result);
 
                                     if (result.status.name == "ok") {
-										
+
+										let news = result['data'];
+
+										if(news.length == 0) {
+
+											$('#1N #title').html('Sorry! No news available for this country');
+											$('#1N #description').html('');
+											$('#1N div.carousel-image').css('background-image', 'url("js/Broken-image-icon-in-Chrome.gif")');
+
+											$('#2N #title').html('Sorry! No news available for this country');
+											$('#2N #description').html('');
+											$('#2N div.carousel-image').css('background-image', 'url("js/Broken-image-icon-in-Chrome.gif")');
+
+											$('#3N #title').html('Sorry! No news available for this country');
+											$('#3N #description').html('');
+											$('#3N div.carousel-image').css('background-image', 'url("js/Broken-image-icon-in-Chrome.gif")');
+
+											$('#4N #title').html('Sorry! No news available for this country');
+											$('#4N #description').html('');
+											$('#4N div.carousel-image').css('background-image', 'url("js/Broken-image-icon-in-Chrome.gif")');
+
+
+										} else {
+
 										//News 1
 
-										$('#1N #title').html('<a href ="' + result['data'][0].url + '" target="_blank">' + result['data'][0].title + '</a>');
-										$('#1N #description').html(result['data'][0].description);
-										$('#1N div.carousel-image').css('background-image', 'url("' + result['data'][0].urlToImage + '")');
+										$('#1N #title').html('<a href ="' + news[0].url + '" target="_blank">' + news[0].title + '</a>');
+										$('#1N #description').html(news[0].description);
+										$('#1N div.carousel-image').css('background-image', 'url("' + news[0].urlToImage + '")');
 
 										//News 2
 
-										$('#2N #title').html('<a href ="' + result['data'][1].url + '" target="_blank">' + result['data'][1].title + '</a>');
-										$('#2N #description').html(result['data'][1].description);
-										$('#2N div.carousel-image').css('background-image', 'url("' + result['data'][1].urlToImage + '")');
+										$('#2N #title').html('<a href ="' + news[1].url + '" target="_blank">' + news[1].title + '</a>');
+										$('#2N #description').html(news[1].description);
+										$('#2N div.carousel-image').css('background-image', 'url("' + news[1].urlToImage + '")');
 
 										//News 3
 
-										$('#3N #title').html('<a href ="' + result['data'][2].url + '" target="_blank">' + result['data'][2].title + '</a>');
-										$('#3N #description').html(result['data'][2].description);
-										$('#3N div.carousel-image').css('background-image', 'url("' + result['data'][2].urlToImage + '")');
+										$('#3N #title').html('<a href ="' + news[2].url + '" target="_blank">' + news[2].title + '</a>');
+										$('#3N #description').html(news[2].description);
+										$('#3N div.carousel-image').css('background-image', 'url("' + news[2].urlToImage + '")');
 
 										//News 4
 
-										$('#4N #title').html('<a href ="' + result['data'][3].url + '" target="_blank">' + result['data'][3].title + '</a>');
-										$('#4N #description').html(result['data'][3].description);
-										$('#4N div.carousel-image').css('background-image', 'url("' + result['data'][3].urlToImage + '")');
+										$('#4N #title').html('<a href ="' + news[3].url + '" target="_blank">' + news[3].title + '</a>');
+										$('#4N #description').html(news[3].description);
+										$('#4N div.carousel-image').css('background-image', 'url("' + news[3].urlToImage + '")');
+
+										}
+
+
 										
                                     }
 
@@ -914,4 +945,3 @@ $(document).ready(function(){
 	}
 	
 });
-
